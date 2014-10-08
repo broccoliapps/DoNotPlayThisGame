@@ -4,6 +4,6 @@
     <string name="app_name">Do Not Play This Game</string>
     <string name="empty_slot">EMPTY</string>
     <string name="how_to_play">How to play</string>
-    <string name="title_activity_activity_level1">ActivityLevel1</string>
+    <string name="activity_level1">ActivityLevel1</string>
 
 </resources>

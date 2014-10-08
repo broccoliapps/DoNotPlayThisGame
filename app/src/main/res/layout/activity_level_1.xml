@@ -7,61 +7,23 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:id="@+id/rlContainer"
-    android:background="@drawable/activity_background_225"
+    android:background="@drawable/activity_background_135"
     tools:context=".MainActivity">
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/iv_logo"
+    <TextView
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:id="@+id/tvLevelIndicator"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:src="@drawable/ic_launcher" />
+        android:gravity="center"
+        android:text="1"
+        android:hapticFeedbackEnabled="true"
+        android:clickable="true"
+        android:longClickable="true"
+        android:textSize="100sp"
+        android:background="@drawable/textview_number_outline"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="64dip"
-        android:id="@+id/ll_button"
-        android:layout_above="@+id/bHowToPlay"
-        android:orientation="horizontal">
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@android:drawable/btn_default"
-            android:text="@string/empty_slot"
-            android:fontFamily="sans-serif-light"
-            android:id="@+id/bSlot1" />
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@android:drawable/btn_default"
-            android:text="@string/empty_slot"
-            android:fontFamily="sans-serif-light"
-            android:id="@+id/bSlot2" />
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fontFamily="sans-serif-light"
-            android:text="@string/empty_slot"
-            android:background="@android:drawable/btn_default"
-            android:layout_weight="1"
-            android:id="@+id/bSlot3" />
-
-    </LinearLayout>
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="64dip"
-        android:layout_alignParentBottom="true"
-        android:text="@string/how_to_play"
-        android:fontFamily="sans-serif-light"
-        android:background="@android:drawable/btn_default"
-        android:id="@+id/bHowToPlay" />
 
 
 </RelativeLayout>
