@@ -24,7 +24,6 @@ import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import broccoli.donotplaythisgame.R;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
@@ -58,6 +57,14 @@ public class ActivityLevel1 extends Activity implements View.OnLongClickListener
         tvLevelIndicator.setOnLongClickListener(this);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        // if the user has queued up lots of Crouton messages by spamming the hint,
+        // cancel these Croutons when it's time to destroy the Activity.
+        Crouton.cancelAllCroutons();
+    }
 
     @Override
     public void onClick(View view) {
@@ -89,7 +96,7 @@ public class ActivityLevel1 extends Activity implements View.OnLongClickListener
             // TODO: TRANSITION TO ACTIVITY LEVEL 2
         }
 
-        // Displays toast message hint
+        // Displays Crouton message hint
         if (currentTextColor.contentEquals(WHITE)) {
             Crouton.makeText(this, "Hmmm...", Style.INFO).show();
 
