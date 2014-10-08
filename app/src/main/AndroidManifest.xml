@@ -26,6 +26,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="broccoli.donotplaythisgame.ActivityMain" />
         </activity>
+        <activity
+            android:name="level1to5.ActivityLevel2"
+            android:label="@string/activity_level2"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".ActivityMain" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="broccoli.donotplaythisgame.ActivityMain" />
+        </activity>
     </application>
 
 </manifest>

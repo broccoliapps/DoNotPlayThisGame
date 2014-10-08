@@ -19,14 +19,17 @@
 package level1to5;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.TextView;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+import com.nineoldandroids.animation.Animator;
 
 import broccoli.donotplaythisgame.R;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
@@ -94,11 +97,42 @@ public class ActivityLevel1 extends Activity implements View.OnLongClickListener
 
         // Transitions to Level 2
         if (currentTextColor.contentEquals(TEXT_COLOR)) {
+
+            // animates Level Indicator
             YoYo.with(Techniques.RollOut)
                     .duration(700)
+                    .interpolate(new AccelerateDecelerateInterpolator())
+                    .withListener(new Animator.AnimatorListener() {
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+
+                            // Changes activities
+                            Intent intent = new Intent(ActivityLevel1.this, ActivityLevel2.class);
+                            startActivity(intent);
+                            overridePendingTransition(R.anim.activity_main_fade_in, R.anim.activity_main_fade_out);
+
+                            // Removes ActivityLevel1 from stack
+                            finish();
+                        }
+
+                        @Override
+                        public void onAnimationCancel(Animator animation) {
+
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animator animation) {
+
+                        }
+                    })
                     .playOn(tvLevelIndicator);
 
-            // TODO: TRANSITION TO ACTIVITY LEVEL 2
+
         }
 
         // Displays Crouton message hint

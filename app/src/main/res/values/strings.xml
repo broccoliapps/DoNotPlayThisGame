@@ -5,5 +5,6 @@
     <string name="empty_slot">EMPTY</string>
     <string name="how_to_play">How to play</string>
     <string name="activity_level1">ActivityLevel1</string>
+    <string name="activity_level2">ActivityLevel2</string>
 
 </resources>
