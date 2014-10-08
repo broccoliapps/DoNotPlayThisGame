@@ -13,13 +13,13 @@ import level1to5.ActivityLevel1;
 public class ActivityMain extends Activity implements View.OnClickListener {
 
     // RelativeLayout container from the Activity layout
-    RelativeLayout rlContainer;
+    private RelativeLayout rlContainer;
 
     // Buttons from the Activity layout
-    Button bSlot1;
-    Button bSlot2;
-    Button bSlot3;
-    Button bHowToPlay;
+    private Button bSlot1;
+    private Button bSlot2;
+    private Button bSlot3;
+    private Button bHowToPlay;
 
 
     @Override
@@ -50,8 +50,7 @@ public class ActivityMain extends Activity implements View.OnClickListener {
                 Intent intent = new Intent(this, ActivityLevel1.class);
                 startActivity(intent);
                 overridePendingTransition(R.anim.fadein, R.anim.fadeout);
-                this.finish();
-
+                
                 break;
             case R.id.bSlot2:
                 break;
