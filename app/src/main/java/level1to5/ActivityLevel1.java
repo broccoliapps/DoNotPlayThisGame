@@ -25,6 +25,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
+
 import broccoli.donotplaythisgame.R;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
@@ -89,15 +92,23 @@ public class ActivityLevel1 extends Activity implements View.OnLongClickListener
     @Override
     public boolean onLongClick(View view) {
 
-
         // Transitions to Level 2
         if (currentTextColor.contentEquals(TEXT_COLOR)) {
+            YoYo.with(Techniques.RollOut)
+                    .duration(700)
+                    .playOn(tvLevelIndicator);
 
             // TODO: TRANSITION TO ACTIVITY LEVEL 2
         }
 
         // Displays Crouton message hint
         if (currentTextColor.contentEquals(WHITE)) {
+
+            // wiggles the level indicator
+            YoYo.with(Techniques.Tada)
+                    .duration(700)
+                    .playOn(tvLevelIndicator);
+
             Crouton.makeText(this, "Hmmm...", Style.INFO).show();
 
 
