@@ -16,6 +16,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="level1to5.ActivityLevel1"
+            android:label="@string/title_activity_activity_level1"
+            android:parentActivityName=".ActivityMain" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="broccoli.donotplaythisgame.ActivityMain" />
+        </activity>
     </application>
 
 </manifest>

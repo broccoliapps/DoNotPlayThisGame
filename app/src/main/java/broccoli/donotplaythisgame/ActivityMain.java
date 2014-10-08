@@ -1,36 +1,66 @@
 package broccoli.donotplaythisgame;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.RelativeLayout;
+
+import level1to5.ActivityLevel1;
 
 
-public class ActivityMain extends Activity {
+public class ActivityMain extends Activity implements View.OnClickListener {
+
+    // RelativeLayout container from the Activity layout
+    RelativeLayout rlContainer;
+
+    // Buttons from the Activity layout
+    Button bSlot1;
+    Button bSlot2;
+    Button bSlot3;
+    Button bHowToPlay;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // initializes Views
+        rlContainer = (RelativeLayout) findViewById(R.id.rlContainer);
+        bSlot1 = (Button) findViewById(R.id.bSlot1);
+        bSlot2 = (Button) findViewById(R.id.bSlot2);
+        bSlot3 = (Button) findViewById(R.id.bSlot3);
+        bHowToPlay = (Button) findViewById(R.id.bHowToPlay);
+
+        // sets button click listeners
+        bSlot1.setOnClickListener(this);
+        bSlot2.setOnClickListener(this);
+        bSlot3.setOnClickListener(this);
+        bHowToPlay.setOnClickListener(this);
+
     }
 
-
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.activity_main, menu);
-        return true;
-    }
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.bSlot1:
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+                Intent intent = new Intent(this, ActivityLevel1.class);
+                startActivityForResult(intent, 1000);
+                overridePendingTransition(R.anim.fadein, R.anim.fadeout);
+                this.finish();
+
+                break;
+            case R.id.bSlot2:
+                break;
+            case R.id.bSlot3:
+                break;
+            case R.id.bHowToPlay:
+                break;
+
         }
-        return super.onOptionsItemSelected(item);
+
     }
 }
