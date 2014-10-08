@@ -49,7 +49,7 @@ public class ActivityMain extends Activity implements View.OnClickListener {
 
                 Intent intent = new Intent(this, ActivityLevel1.class);
                 startActivity(intent);
-                overridePendingTransition(R.anim.fadein, R.anim.fadeout);
+                overridePendingTransition(R.anim.activity_main_fade_in, R.anim.activity_main_fade_out);
 
                 break;
             case R.id.bSlot2:

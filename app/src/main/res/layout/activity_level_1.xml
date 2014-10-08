@@ -21,9 +21,7 @@
         android:hapticFeedbackEnabled="true"
         android:clickable="true"
         android:longClickable="true"
-        android:textSize="100sp"
-        android:background="@drawable/textview_number_outline"/>
-
+        android:textSize="100sp" />
 
 
 </RelativeLayout>
