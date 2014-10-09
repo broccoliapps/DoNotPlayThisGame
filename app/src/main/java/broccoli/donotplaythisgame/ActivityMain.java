@@ -2,10 +2,12 @@ package broccoli.donotplaythisgame;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import level1to5.ActivityLevel1;
 
@@ -14,6 +16,9 @@ public class ActivityMain extends Activity implements View.OnClickListener {
 
     // RelativeLayout container from the Activity layout
     private RelativeLayout rlContainer;
+
+    // TextView logo
+    private TextView tvLogo;
 
     // Buttons from the Activity layout
     private Button bSlot1;
@@ -29,10 +34,16 @@ public class ActivityMain extends Activity implements View.OnClickListener {
 
         // initializes Views
         rlContainer = (RelativeLayout) findViewById(R.id.rlContainer);
+        tvLogo = (TextView) findViewById(R.id.tvLogo);
         bSlot1 = (Button) findViewById(R.id.bSlot1);
         bSlot2 = (Button) findViewById(R.id.bSlot2);
         bSlot3 = (Button) findViewById(R.id.bSlot3);
         bHowToPlay = (Button) findViewById(R.id.bHowToPlay);
+
+        // Sets logo font
+        Typeface face = Typeface.createFromAsset(getAssets(),
+                "fonts/android-dev-icons-2.ttf");
+        tvLogo.setTypeface(face);
 
         // sets button click listeners
         bSlot1.setOnClickListener(this);
