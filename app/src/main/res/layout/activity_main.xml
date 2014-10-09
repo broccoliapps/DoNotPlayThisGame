@@ -10,6 +10,20 @@
     android:background="@drawable/activity_background_135"
     tools:context=".MainActivity">
 
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvTitle"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/tvLogo"
+        android:paddingBottom="42dp"
+        android:fontFamily="sans-serif-condensed"
+        android:text="DNPTG"
+        android:textSize="120sp"
+        android:gravity="center"/>
+
     <TextView
         android:layout_width="150dp"
         android:layout_height="150dp"
