@@ -54,13 +54,8 @@ public class ActivityLevel2 extends Activity {
         // Gesture detection
         gestureDetector = new GestureDetector(this, new MyGestureDetector());
         gestureListener = new View.OnTouchListener() {
+
             public boolean onTouch(View v, MotionEvent event) {
-
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    tvLevelIndicator.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,
-                            HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
-                }
-
                 return gestureDetector.onTouchEvent(event);
             }
         };
@@ -126,18 +121,18 @@ public class ActivityLevel2 extends Activity {
                 // right to left swipe
                 if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
 
-                    tvLevelIndicator.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,
-                            HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
 
                     Crouton.cancelAllCroutons();
                     Crouton.makeText(ActivityLevel2.this, "Swipe swipe swipe...", Style.INFO).show();
+                    YoYo.with(Techniques.Tada)
+                            .duration(700)
+                            .playOn(tvLevelIndicator);
 
 
                 } else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
 
-                    tvLevelIndicator.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,
-                            HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
-
+                   
+                    Crouton.cancelAllCroutons();
                     animateLevelIndicator();
 
                 }
@@ -147,8 +142,27 @@ public class ActivityLevel2 extends Activity {
             return false;
         }
 
+
+        @Override
+        public void onLongPress(MotionEvent e) {
+            super.onLongPress(e);
+
+            Crouton.cancelAllCroutons();
+            Crouton.makeText(ActivityLevel2.this, "C'mon, that's too easy...", Style.INFO).show();
+
+            YoYo.with(Techniques.Tada)
+                    .duration(700)
+                    .playOn(tvLevelIndicator);
+
+
+        }
+
         @Override
         public boolean onDown(MotionEvent e) {
+            if (e.getAction() == MotionEvent.ACTION_DOWN) {
+                tvLevelIndicator.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,
+                        HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+            }
             return true;
         }
     }
