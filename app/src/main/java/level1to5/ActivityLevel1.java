@@ -163,7 +163,7 @@ public class ActivityLevel1 extends ActivitySelector implements View.OnLongClick
 
         // Shows hint if color was switched a multiple of 15.
         clicks++;
-        if (clicks % 15 == 0) {
+        if (clicks % 10 == 0) {
             showHint(0);
         }
 
