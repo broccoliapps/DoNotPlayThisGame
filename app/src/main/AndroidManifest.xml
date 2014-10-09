@@ -37,7 +37,12 @@
         </activity>
         <activity
             android:name=".ActivitySelector"
-            android:label="@string/title_activity_activity_selector" >
+            android:label="@string/activity_selector"
+            android:parentActivityName=".ActivityMain"
+            android:screenOrientation="portrait" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="broccoli.donotplaythisgame.ActivityMain" />
         </activity>
     </application>
 

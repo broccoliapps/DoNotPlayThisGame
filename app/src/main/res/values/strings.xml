@@ -6,8 +6,6 @@
     <string name="how_to_play">How to play</string>
     <string name="activity_level1">ActivityLevel1</string>
     <string name="activity_level2">ActivityLevel2</string>
-    <string name="title_activity_activity_selector">ActivitySelector</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="activity_selector">ActivitySelector</string>
 
 </resources>
