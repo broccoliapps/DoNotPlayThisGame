@@ -31,12 +31,13 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.nineoldandroids.animation.Animator;
 
+import broccoli.donotplaythisgame.ActivitySelector;
 import broccoli.donotplaythisgame.R;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
 
-public class ActivityLevel1 extends Activity implements View.OnLongClickListener, View.OnClickListener, View.OnTouchListener {
+public class ActivityLevel1 extends ActivitySelector implements View.OnLongClickListener, View.OnClickListener, View.OnTouchListener {
 
     private TextView tvLevelIndicator;
 
@@ -46,7 +47,7 @@ public class ActivityLevel1 extends Activity implements View.OnLongClickListener
     private String currentTextColor;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_level_1);
 

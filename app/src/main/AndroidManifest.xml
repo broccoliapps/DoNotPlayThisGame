@@ -9,8 +9,8 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".ActivityMain"
-            android:screenOrientation="portrait"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,8 +20,8 @@
         <activity
             android:name="level1to5.ActivityLevel1"
             android:label="@string/activity_level1"
-            android:screenOrientation="portrait"
-            android:parentActivityName=".ActivityMain" >
+            android:parentActivityName=".ActivityMain"
+            android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="broccoli.donotplaythisgame.ActivityMain" />
@@ -29,11 +29,15 @@
         <activity
             android:name="level1to5.ActivityLevel2"
             android:label="@string/activity_level2"
-            android:screenOrientation="portrait"
-            android:parentActivityName=".ActivityMain" >
+            android:parentActivityName=".ActivityMain"
+            android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="broccoli.donotplaythisgame.ActivityMain" />
+        </activity>
+        <activity
+            android:name=".ActivitySelector"
+            android:label="@string/title_activity_activity_selector" >
         </activity>
     </application>
 
