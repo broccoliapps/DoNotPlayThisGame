@@ -1,9 +1,11 @@
 package broccoli.donotplaythisgame;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -82,9 +84,6 @@ public class ActivitySelector extends ActivityMain {
                         .playOn(v);
 
 
-
-
-
             }
         });
 
@@ -129,8 +128,8 @@ class SelectorAdapter extends BaseAdapter {
         TextView textView = new TextView(mContext);
         textView.setTextSize(36);
         textView.setGravity(Gravity.CENTER);
-        textView.setHeight(144);
-        textView.setWidth(72);
+        textView.setHeight(Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 72, mContext.getApplicationContext().getResources().getDisplayMetrics())));
+        textView.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
         textView.setHapticFeedbackEnabled(true);
 
         // shows the level indicator when level is complete
