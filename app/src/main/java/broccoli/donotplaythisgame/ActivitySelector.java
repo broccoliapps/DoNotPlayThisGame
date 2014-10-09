@@ -1,19 +1,23 @@
 package broccoli.donotplaythisgame;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
+import com.nineoldandroids.animation.Animator;
+
+import java.util.HashSet;
 
 import level1to5.ActivityLevel1;
 
@@ -21,11 +25,6 @@ public class ActivitySelector extends ActivityMain {
 
     GridView gridView;
 
-    static final String[] numbers = new String[] {
-            "01", "02", "03", "04", "05",
-            "06", "07", "08", "09", "10",
-            "11", "12", "13", "14", "15",
-            "16", "17", "18", "19", "20"};
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -35,18 +34,55 @@ public class ActivitySelector extends ActivityMain {
 
         gridView = (GridView) findViewById(R.id.gridLevels);
 
-        gridView.setAdapter(new ImageAdapter(this));
+        // holds the levels that have been completed (zero-indexed. ie: level1 is index 0)
+        HashSet<String> completedLevels = new HashSet<String>();
+        completedLevels.add("0");
+
+
+        gridView.setAdapter(new SelectorAdapter(this, completedLevels));
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                switch(position) {
-                    case 0:
-                        Intent intent = new Intent(getApplicationContext(), ActivityLevel1.class);
-                        startActivity(intent);
-                        overridePendingTransition(R.anim.activity_main_fade_in, R.anim.activity_main_fade_out);
-                        break;
-                    default:
-                }
+                final int pos = position;
+                YoYo.with(Techniques.Pulse)
+                        .duration(400)
+                        .interpolate(new AccelerateDecelerateInterpolator())
+                        .withListener(new Animator.AnimatorListener() {
+
+                            @Override
+                            public void onAnimationStart(Animator animation) {
+
+                            }
+
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+
+                                switch (pos) {
+                                    case 0:
+                                        Intent intent = new Intent(getApplicationContext(), ActivityLevel1.class);
+                                        startActivity(intent);
+                                        overridePendingTransition(R.anim.activity_main_fade_in, R.anim.activity_main_fade_out);
+                                        break;
+                                    default:
+                                }
+
+                            }
+
+                            @Override
+                            public void onAnimationCancel(Animator animation) {
+
+                            }
+
+                            @Override
+                            public void onAnimationRepeat(Animator animation) {
+
+                            }
+                        })
+                        .playOn(v);
+
+
+
 
 
             }
@@ -55,11 +91,23 @@ public class ActivitySelector extends ActivityMain {
     }
 }
 
-class ImageAdapter extends BaseAdapter {
-    private Context mContext;
+class SelectorAdapter extends BaseAdapter {
 
-    public ImageAdapter(Context c) {
+    private Context mContext;
+    private Typeface mFace;
+    private HashSet<String> mCompletedLevels;
+
+    private String[] numbers = new String[]{
+            "1", "2", "3", "4", "5",
+            "6", "7", "8", "9", "10",
+            "11", "12", "13", "14", "15",
+            "16", "17", "18", "19", "20"};
+
+    public SelectorAdapter(Context c, HashSet<String> completedLevels) {
         mContext = c;
+        mFace = Typeface.createFromAsset(mContext.getAssets(),
+                "fonts/android-dev-icons-2.ttf");
+        mCompletedLevels = completedLevels;
     }
 
     public int getCount() {
@@ -74,34 +122,33 @@ class ImageAdapter extends BaseAdapter {
         return 0;
     }
 
-    // create a new ImageView for each item referenced by the Adapter
+    // create a new TextView for each item referenced by the Adapter
     public View getView(int position, View convertView, ViewGroup parent) {
 
+        // creates a new TextView
         TextView textView = new TextView(mContext);
         textView.setTextSize(36);
         textView.setGravity(Gravity.CENTER);
-        textView.setHeight(225);
-        textView.setWidth(150);
-        textView.setBackgroundResource(R.drawable.gridview_number_outline_text_color);
-        //textView.setPadding(8, 8, 8, 8);
+        textView.setHeight(144);
+        textView.setWidth(72);
+        textView.setHapticFeedbackEnabled(true);
 
-        if (convertView == null) {  // if it's not recycled, initialize some attributes
-            textView.setPadding(8, 8, 8, 8);
-            //textView.setBackgroundResource(R.drawable.gridview_number_outline_text_color);
-        } else {
-            //imageView = (ImageView) convertView;
+        // shows the level indicator when level is complete
+        if (mCompletedLevels.contains(Integer.toString(position))) {
+            textView.setBackgroundResource(R.drawable.gridview_number_outline_white);
+            textView.setTextColor(mContext.getResources().getColor(R.color.white));
+            textView.setText(numbers[position]);
         }
-        textView.setText(numbers[position]);
 
-        //imageView.setImageResource(mThumbIds[position]);
+        // Shows lock when level is not complete
+        else {
+            textView.setBackgroundResource(R.drawable.gridview_number_outline_text_color);
+            textView.setTypeface(mFace);
+            textView.setText("P");
+        }
+
         return textView;
     }
 
-    private String[] numbers = new String[] {
-            "1", "2", "3", "4", "5",
-            "6", "7", "8", "9", "10",
-            "11", "12", "13", "14", "15",
-            "16", "17", "18", "19", "20"};
 
-    //};
 }

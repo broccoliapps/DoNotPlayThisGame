@@ -120,7 +120,7 @@ public class ActivityLevel1 extends ActivitySelector implements View.OnLongClick
                 break;
         }
 
-
+        // animates the level indicator
         YoYo.with(Techniques.Tada)
                 .duration(700)
                 .playOn(tvLevelIndicator);
