@@ -50,6 +50,7 @@ public class ActivityLevel1 extends ActivitySelector implements View.OnLongClick
     // holds the level indicator TextView and information about its current text color
     private TextView tvLevelIndicator;
     private String currentTextColor;
+    private int clicks = 0;
 
     // //////////////////
     // PRIVATE METHODS //
@@ -104,10 +105,21 @@ public class ActivityLevel1 extends ActivitySelector implements View.OnLongClick
     /**
      * Shows the Crouton hint and animates the View that contained the hint.
      */
-    private void showHint() {
+    private void showHint(int index) {
 
-        Crouton.cancelAllCroutons();
-        Crouton.makeText(this, "Hmmm...", Style.INFO).show();
+        switch (index) {
+            case 0:
+                Crouton.cancelAllCroutons();
+                Crouton.makeText(this, "Black or white?", Style.INFO).show();
+                break;
+            case 1:
+                Crouton.cancelAllCroutons();
+                Crouton.makeText(this, "Hmmm...", Style.INFO).show();
+                break;
+            default:
+                break;
+        }
+
 
         YoYo.with(Techniques.Tada)
                 .duration(700)
@@ -149,6 +161,12 @@ public class ActivityLevel1 extends ActivitySelector implements View.OnLongClick
     @Override
     public void onClick(View view) {
 
+        // Shows hint if color was switched a multiple of 15.
+        clicks++;
+        if (clicks % 15 == 0) {
+            showHint(0);
+        }
+
         // Changes level indicator to white
         if (currentTextColor.contentEquals(TEXT_COLOR)) {
             tvLevelIndicator.setBackgroundResource(R.drawable.textview_number_outline_white);
@@ -164,6 +182,7 @@ public class ActivityLevel1 extends ActivitySelector implements View.OnLongClick
             currentTextColor = TEXT_COLOR;
             return;
         }
+
     }
 
     @Override
@@ -176,7 +195,7 @@ public class ActivityLevel1 extends ActivitySelector implements View.OnLongClick
 
         // Displays Crouton message hint
         if (currentTextColor.contentEquals(TEXT_COLOR)) {
-            showHint();
+            showHint(1);
         }
 
 
