@@ -39,12 +39,85 @@ import de.keyboardsurfer.android.widget.crouton.Style;
 
 public class ActivityLevel1 extends ActivitySelector implements View.OnLongClickListener, View.OnClickListener, View.OnTouchListener {
 
-    private TextView tvLevelIndicator;
+    // ///////////////////
+    // GLOBAL VARIABLES //
+    // ///////////////////
 
     // holds the colors of the TextView level indicator
     private final String WHITE = "WHITE";
     private final String TEXT_COLOR = "TEXT_COLOR";
+
+    // holds the level indicator TextView and information about its current text color
+    private TextView tvLevelIndicator;
     private String currentTextColor;
+
+    // //////////////////
+    // PRIVATE METHODS //
+    // //////////////////
+
+    /**
+     * Animates the transition to the next level and saves the game slot.
+     */
+    private void nextLevel() {
+
+        Crouton.cancelAllCroutons();
+
+        // animates Level Indicator
+        YoYo.with(Techniques.RollOut)
+                .duration(700)
+                .interpolate(new AccelerateDecelerateInterpolator())
+                .withListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+
+                        // TODO: SAVE GAME SLOT
+
+                        // Changes activities
+                        Intent intent = new Intent(ActivityLevel1.this, ActivityLevel2.class);
+                        startActivity(intent);
+                        overridePendingTransition(R.anim.activity_main_fade_in, R.anim.activity_main_fade_out);
+
+                        // Removes ActivityLevel1 from stack
+                        finish();
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                })
+                .playOn(tvLevelIndicator);
+
+
+    }
+
+    /**
+     * Shows the Crouton hint and animates the View that contained the hint.
+     */
+    private void showHint() {
+
+        Crouton.cancelAllCroutons();
+        Crouton.makeText(this, "Hmmm...", Style.INFO).show();
+
+        YoYo.with(Techniques.Tada)
+                .duration(700)
+                .playOn(tvLevelIndicator);
+
+    }
+
+    // //////////////////////////
+    // PUBLIC OVERRIDE METHODS //
+    // //////////////////////////
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -98,56 +171,12 @@ public class ActivityLevel1 extends ActivitySelector implements View.OnLongClick
 
         // Transitions to Level 2
         if (currentTextColor.contentEquals(WHITE)) {
-
-            // animates Level Indicator
-            YoYo.with(Techniques.RollOut)
-                    .duration(700)
-                    .interpolate(new AccelerateDecelerateInterpolator())
-                    .withListener(new Animator.AnimatorListener() {
-                        @Override
-                        public void onAnimationStart(Animator animation) {
-
-                        }
-
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-
-                            // Changes activities
-                            Intent intent = new Intent(ActivityLevel1.this, ActivityLevel2.class);
-                            startActivity(intent);
-                            overridePendingTransition(R.anim.activity_main_fade_in, R.anim.activity_main_fade_out);
-
-                            // Removes ActivityLevel1 from stack
-                            finish();
-                        }
-
-                        @Override
-                        public void onAnimationCancel(Animator animation) {
-
-                        }
-
-                        @Override
-                        public void onAnimationRepeat(Animator animation) {
-
-                        }
-                    })
-                    .playOn(tvLevelIndicator);
-
-
+            nextLevel();
         }
 
         // Displays Crouton message hint
         if (currentTextColor.contentEquals(TEXT_COLOR)) {
-
-            // wiggles the level indicator
-            YoYo.with(Techniques.Tada)
-                    .duration(700)
-                    .playOn(tvLevelIndicator);
-
-            Crouton.cancelAllCroutons();
-            Crouton.makeText(this, "Hmmm...", Style.INFO).show();
-
-
+            showHint();
         }
 
 

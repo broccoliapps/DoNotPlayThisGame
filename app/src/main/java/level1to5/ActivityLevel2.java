@@ -1,18 +1,15 @@
 
 
 /**
- * LEVEL:           1
+ * LEVEL:           2
  *
  * AUTHOR:          Danny Delott
  *
  * DATE:            10/08/2014
  *
  * DESCRIPTION:     In this level, the user is presented with a clickable level indicator TextView.
- *                  When clicked, the level indicator changes from the default text color to white.
  *
- *
- * HOW TO:          In order to advance to the next level, the user must LONG PRESS on the level indicator
- *                  when the text color is the default text color (#323232).
+ * HOW TO:          In order to advance to the next level, the user must SWIPE RIGHT on the level indicator.
  *
  */
 
@@ -38,45 +35,37 @@ import de.keyboardsurfer.android.widget.crouton.Style;
 
 public class ActivityLevel2 extends Activity {
 
-    private TextView tvLevelIndicator;
+    // ///////////////////
+    // GLOBAL VARIABLES //
+    // ///////////////////
 
+    // holds the swipe field size and velocity thresholds
     private static final int SWIPE_MIN_DISTANCE = 120;
     private static final int SWIPE_MAX_OFF_PATH = 250;
     private static final int SWIPE_THRESHOLD_VELOCITY = 200;
+
+    // holds the level indicator TextView
+    private TextView tvLevelIndicator;
+
+    // holds the onTouch listener to set for tvLevelIndicator.
     private GestureDetector gestureDetector;
     View.OnTouchListener gestureListener;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_level_2);
+    // //////////////////
+    // PRIVATE METHODS //
+    // //////////////////
 
-        // Gesture detection
-        gestureDetector = new GestureDetector(this, new MyGestureDetector());
-        gestureListener = new View.OnTouchListener() {
-
-            public boolean onTouch(View v, MotionEvent event) {
-                return gestureDetector.onTouchEvent(event);
-            }
-        };
-
-        // instantiates TextView level indicator from layout xml file
-        tvLevelIndicator = (TextView) findViewById(R.id.tvLevelIndicator);
-        tvLevelIndicator.setClickable(true);
-
-        // sets on click listeners for touch events on the level indicator
-        tvLevelIndicator.setOnTouchListener(gestureListener);
-
-
-    }
-
-
-    public void animateLevelIndicator() {
+    /**
+     * Animates the transition to the next level and saves the game slot.
+     */
+    private void nextLevel() {
+        Crouton.cancelAllCroutons();
 
         YoYo.with(Techniques.RollOut)
                 .duration(700)
                 .interpolate(new AccelerateDecelerateInterpolator())
                 .withListener(new Animator.AnimatorListener() {
+
                     @Override
                     public void onAnimationStart(Animator animation) {
 
@@ -85,6 +74,7 @@ public class ActivityLevel2 extends Activity {
                     @Override
                     public void onAnimationEnd(Animator animation) {
 
+                        // TODO: transition to ActivityLevel3
 
                     }
 
@@ -101,6 +91,58 @@ public class ActivityLevel2 extends Activity {
                 .playOn(tvLevelIndicator);
     }
 
+    /**
+     * Shows the Crouton hint and animates the View that contained the hint.
+     */
+    private void showHint(int index) {
+
+        // shows Crouton
+        Crouton.cancelAllCroutons();
+        switch (index) {
+            case 0:
+                Crouton.makeText(ActivityLevel2.this, "C'mon, that's too easy...", Style.INFO).show();
+                break;
+            case 1:
+                Crouton.makeText(ActivityLevel2.this, "Swipe swipe swipe...", Style.INFO).show();
+                break;
+            default:
+                break;
+        }
+
+        // animates View that contained the hint
+        YoYo.with(Techniques.Tada)
+                .duration(700)
+                .playOn(tvLevelIndicator);
+
+    }
+
+    // //////////////////////////
+    // PUBLIC OVERRIDE METHODS //
+    // //////////////////////////
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_level_2);
+
+        // instantiates GestureDetector Interface to set in tvLevelIndicator.onTouchListener();
+        gestureDetector = new GestureDetector(this, new MyGestureDetector());
+        gestureListener = new View.OnTouchListener() {
+
+            public boolean onTouch(View v, MotionEvent event) {
+                return gestureDetector.onTouchEvent(event);
+            }
+        };
+
+        // instantiates TextView level indicator from layout xml file
+        tvLevelIndicator = (TextView) findViewById(R.id.tvLevelIndicator);
+        tvLevelIndicator.setClickable(true);
+
+        // sets on click listener for touch events on the level indicator
+        tvLevelIndicator.setOnTouchListener(gestureListener);
+
+
+    }
 
     @Override
     protected void onDestroy() {
@@ -112,28 +154,37 @@ public class ActivityLevel2 extends Activity {
     }
 
 
-    class MyGestureDetector extends GestureDetector.SimpleOnGestureListener {
+    // //////////////////
+    // PRIVATE CLASSES //
+    // //////////////////
+
+    /**
+     * The GestureDetector Interface to be used as the tvLevelIndicator's onTouch listener.
+     * <p/>
+     * This class captures left and right swipe motion.
+     */
+    private class MyGestureDetector extends GestureDetector.SimpleOnGestureListener {
+
+        // //////////////////////////
+        // PUBLIC OVERRIDE METHODS //
+        // //////////////////////////
+
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
             try {
+
+                // bad swipe
                 if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH)
                     return false;
+
                 // right to left swipe
                 if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                    showHint(1);
+                }
 
-
-                    Crouton.cancelAllCroutons();
-                    Crouton.makeText(ActivityLevel2.this, "Swipe swipe swipe...", Style.INFO).show();
-                    YoYo.with(Techniques.Tada)
-                            .duration(700)
-                            .playOn(tvLevelIndicator);
-
-
-                } else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-
-                   
-                    Crouton.cancelAllCroutons();
-                    animateLevelIndicator();
+                // left to right swipe
+                else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                    nextLevel();
 
                 }
             } catch (Exception e) {
@@ -147,12 +198,7 @@ public class ActivityLevel2 extends Activity {
         public void onLongPress(MotionEvent e) {
             super.onLongPress(e);
 
-            Crouton.cancelAllCroutons();
-            Crouton.makeText(ActivityLevel2.this, "C'mon, that's too easy...", Style.INFO).show();
-
-            YoYo.with(Techniques.Tada)
-                    .duration(700)
-                    .playOn(tvLevelIndicator);
+            showHint(0);
 
 
         }
