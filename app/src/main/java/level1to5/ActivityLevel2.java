@@ -24,18 +24,19 @@ import android.view.GestureDetector;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+import com.nineoldandroids.animation.Animator;
 
 import broccoli.donotplaythisgame.R;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
 
-public class ActivityLevel2 extends Activity implements View.OnTouchListener {
+public class ActivityLevel2 extends Activity {
 
     private TextView tvLevelIndicator;
 
@@ -54,21 +55,57 @@ public class ActivityLevel2 extends Activity implements View.OnTouchListener {
         gestureDetector = new GestureDetector(this, new MyGestureDetector());
         gestureListener = new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
+
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    tvLevelIndicator.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,
+                            HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+                }
+
                 return gestureDetector.onTouchEvent(event);
             }
         };
 
         // instantiates TextView level indicator from layout xml file
         tvLevelIndicator = (TextView) findViewById(R.id.tvLevelIndicator);
-        tvLevelIndicator.setVisibility(View.VISIBLE);
-        YoYo.with(Techniques.BounceInDown)
-                .duration(700)
-                .playOn(tvLevelIndicator);
         tvLevelIndicator.setClickable(true);
+
         // sets on click listeners for touch events on the level indicator
         tvLevelIndicator.setOnTouchListener(gestureListener);
 
+
     }
+
+
+    public void animateLevelIndicator() {
+
+        YoYo.with(Techniques.RollOut)
+                .duration(700)
+                .interpolate(new AccelerateDecelerateInterpolator())
+                .withListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+
+
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                })
+                .playOn(tvLevelIndicator);
+    }
+
 
     @Override
     protected void onDestroy() {
@@ -80,16 +117,6 @@ public class ActivityLevel2 extends Activity implements View.OnTouchListener {
     }
 
 
-    @Override
-    public boolean onTouch(View view, MotionEvent motionEvent) {
-        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-            view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,
-                    HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
-        }
-        return false;
-    }
-
-
     class MyGestureDetector extends GestureDetector.SimpleOnGestureListener {
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
@@ -97,12 +124,22 @@ public class ActivityLevel2 extends Activity implements View.OnTouchListener {
                 if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH)
                     return false;
                 // right to left swipe
-                if(e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-                    Toast.makeText(ActivityLevel2.this, "Left Swipe", Toast.LENGTH_SHORT).show();
+                if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+
+                    tvLevelIndicator.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,
+                            HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+
+                    Crouton.cancelAllCroutons();
+                    Crouton.makeText(ActivityLevel2.this, "Swipe swipe swipe...", Style.INFO).show();
 
 
-                }  else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-                    Toast.makeText(ActivityLevel2.this, "Right Swipe", Toast.LENGTH_SHORT).show();
+                } else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+
+                    tvLevelIndicator.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,
+                            HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+
+                    animateLevelIndicator();
+
                 }
             } catch (Exception e) {
                 // nothing

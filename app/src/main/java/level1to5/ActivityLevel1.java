@@ -96,7 +96,7 @@ public class ActivityLevel1 extends Activity implements View.OnLongClickListener
     public boolean onLongClick(View view) {
 
         // Transitions to Level 2
-        if (currentTextColor.contentEquals(TEXT_COLOR)) {
+        if (currentTextColor.contentEquals(WHITE)) {
 
             // animates Level Indicator
             YoYo.with(Techniques.RollOut)
@@ -136,13 +136,14 @@ public class ActivityLevel1 extends Activity implements View.OnLongClickListener
         }
 
         // Displays Crouton message hint
-        if (currentTextColor.contentEquals(WHITE)) {
+        if (currentTextColor.contentEquals(TEXT_COLOR)) {
 
             // wiggles the level indicator
             YoYo.with(Techniques.Tada)
                     .duration(700)
                     .playOn(tvLevelIndicator);
 
+            Crouton.cancelAllCroutons();
             Crouton.makeText(this, "Hmmm...", Style.INFO).show();
 
 
