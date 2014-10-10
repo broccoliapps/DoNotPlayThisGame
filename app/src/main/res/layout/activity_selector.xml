@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@drawable/activity_background_135"
@@ -12,19 +11,21 @@
         android:gravity="center"
         android:fontFamily="sans-serif"
         android:textSize="36sp"
-        android:text="@string/Seriously"/>
+        android:text="@string/Seriously" />
 
     <GridView
         android:id="@+id/gridLevels"
         android:numColumns="4"
+        android:listSelector="@android:color/transparent"
         android:gravity="center"
         android:columnWidth="72dp"
         android:verticalSpacing="8dp"
         android:horizontalSpacing="8dp"
         android:stretchMode="columnWidth"
+        android:clipToPadding="false"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:padding="@dimen/activity_horizontal_margin"/>
+        android:padding="@dimen/activity_horizontal_margin" />
 
 
 </LinearLayout>

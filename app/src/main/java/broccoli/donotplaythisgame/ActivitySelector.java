@@ -7,6 +7,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.HapticFeedbackConstants;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -47,7 +48,12 @@ public class ActivitySelector extends ActivityMain {
 
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 final int pos = position;
-                YoYo.with(Techniques.Pulse)
+                final View view = v;
+
+                view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,
+                        HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+
+                YoYo.with(Techniques.Wave)
                         .duration(400)
                         .interpolate(new AccelerateDecelerateInterpolator())
                         .withListener(new Animator.AnimatorListener() {
@@ -59,7 +65,6 @@ public class ActivitySelector extends ActivityMain {
 
                             @Override
                             public void onAnimationEnd(Animator animation) {
-
                                 switch (pos) {
                                     case 0:
                                         Intent intent = new Intent(getApplicationContext(), ActivityLevel1.class);
@@ -81,7 +86,7 @@ public class ActivitySelector extends ActivityMain {
 
                             }
                         })
-                        .playOn(v);
+                        .playOn(view);
 
 
             }
@@ -134,14 +139,14 @@ class SelectorAdapter extends BaseAdapter {
 
         // shows the level indicator when level is complete
         if (mCompletedLevels.contains(Integer.toString(position))) {
-            textView.setBackgroundResource(R.drawable.gridview_number_outline_white);
+            textView.setBackgroundResource(R.drawable.activity_selector_textview_white);
             textView.setTextColor(mContext.getResources().getColor(R.color.white));
             textView.setText(numbers[position]);
         }
 
         // Shows lock when level is not complete
         else {
-            textView.setBackgroundResource(R.drawable.gridview_number_outline_text_color);
+            textView.setBackgroundResource(R.drawable.activity_selector_textview);
             textView.setTypeface(mFace);
             textView.setText("P");
         }
