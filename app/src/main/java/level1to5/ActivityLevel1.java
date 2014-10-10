@@ -20,6 +20,7 @@ package level1to5;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
@@ -43,6 +44,10 @@ public class ActivityLevel1 extends ActivitySelector implements View.OnLongClick
     // GLOBAL VARIABLES //
     // ///////////////////
 
+    //GameData
+    //private SharedPreferences gameData = this.getSharedPreferences("broccoliapps.dnptg.data", 0);
+    //private SharedPreferences.Editor gameDataEditor = gameData.edit();
+
     // holds the colors of the TextView level indicator
     private final String WHITE = "WHITE";
     private final String TEXT_COLOR = "TEXT_COLOR";
@@ -60,7 +65,11 @@ public class ActivityLevel1 extends ActivitySelector implements View.OnLongClick
      * Animates the transition to the next level and saves the game slot.
      */
     private void nextLevel() {
-
+        SharedPreferences gameData = this.getSharedPreferences("broccoliapps.dnptg.data", 0);
+        SharedPreferences.Editor gameDataEditor = gameData.edit();
+        gameDataEditor.putInt("levelsTried1",1);
+        gameDataEditor.apply();
+        levelsTried[0] = 1;
         Crouton.cancelAllCroutons();
 
         // animates Level Indicator
