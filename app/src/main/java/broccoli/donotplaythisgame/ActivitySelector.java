@@ -1,6 +1,6 @@
 package broccoli.donotplaythisgame;
 
-import android.app.ActionBar;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -23,75 +23,174 @@ import com.nineoldandroids.animation.Animator;
 import java.util.HashSet;
 
 import level1to5.ActivityLevel1;
+import level1to5.ActivityLevel2;
 
-public class ActivitySelector extends ActivityMain {
+public class ActivitySelector extends Activity implements AdapterView.OnItemClickListener {
 
+    // contains the TextView items that represent the level activities
     GridView gridView;
+
+    // holds the index of the level activities available to the user
+    HashSet<Integer> availableLevels;
+
+    // holds animation logic
+    final Techniques animTechnique = Techniques.Wave;
+    boolean isAnimating;
+    boolean isAnimatingLockedLevel;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_selector);
 
+        // TODO: LOAD COMPLETED LEVELS INTO HASHSET
+        availableLevels = new HashSet<Integer>();
+        availableLevels.add(0);
+
+        // initializes GridView and sets adapter and touch/click listeners
         gridView = (GridView) findViewById(R.id.gridLevels);
+        gridView.setAdapter(new SelectorAdapter(this, availableLevels));
+        gridView.setOnItemClickListener(this);
 
-        // holds the levels that have been completed (zero-indexed. ie: level1 is index 0)
-        HashSet<String> completedLevels = new HashSet<String>();
-        completedLevels.add("0");
+        isAnimating = false;
+        isAnimatingLockedLevel = false;
 
+    }
 
-        gridView.setAdapter(new SelectorAdapter(this, completedLevels));
+    @Override
+    protected void onResume() {
+        super.onResume();
 
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        // resets the animation boolean logic to make gridView items clickable again
+        isAnimating = false;
+        isAnimatingLockedLevel = false;
+    }
 
-            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                final int pos = position;
-                final View view = v;
+    /**
+     * Determines if the level index is locked or available.
+     *
+     * @param levelIndex Level index (starting at 0 for Level 1)
+     * @return TRUE if level is locked. FALSE if level is available.
+     */
+    private boolean isLockedLevel(int levelIndex) {
+        if (availableLevels.contains(levelIndex)) {
+            return false;
+        }
+        return true;
+    }
 
-                view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,
-                        HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
-
-                YoYo.with(Techniques.Wave)
-                        .duration(400)
-                        .interpolate(new AccelerateDecelerateInterpolator())
-                        .withListener(new Animator.AnimatorListener() {
-
-                            @Override
-                            public void onAnimationStart(Animator animation) {
-
-                            }
-
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                switch (pos) {
-                                    case 0:
-                                        Intent intent = new Intent(getApplicationContext(), ActivityLevel1.class);
-                                        startActivity(intent);
-                                        overridePendingTransition(R.anim.activity_main_fade_in, R.anim.activity_main_fade_out);
-                                        break;
-                                    default:
-                                }
-
-                            }
-
-                            @Override
-                            public void onAnimationCancel(Animator animation) {
-
-                            }
-
-                            @Override
-                            public void onAnimationRepeat(Animator animation) {
-
-                            }
-                        })
-                        .playOn(view);
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View v, int position, long id) {
 
 
-            }
-        });
+        // user clicked an available level and it's not currently processing an available level
+        if (!isLockedLevel(position) && !isAnimating) {
 
+            // performs haptic feedback
+            v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,
+                    HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+
+            // disables the View
+            v.setEnabled(false);
+
+            // animates the View
+            isAnimating = true;
+            startLevelWithAnimation(v, position);
+
+        }
+
+        // user clicked a locked level and it's not currently processing a locked level
+        if (isLockedLevel(position) && !isAnimatingLockedLevel) {
+
+
+            // performs haptic feedback
+            v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,
+                    HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+
+            // disables the View
+            v.setEnabled(false);
+
+            // animates the View
+            isAnimatingLockedLevel = true;
+            animateLockedLevel(v);
+
+        }
+    }
+
+
+    private void animateLockedLevel(View view) {
+
+        // declare as final to give access to AnimatorListener override methods
+        final View v = view;
+
+        YoYo.with(animTechnique)
+                .duration(400)
+                .interpolate(new AccelerateDecelerateInterpolator())
+                .withListener(new Animator.AnimatorListener() {
+
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        v.setEnabled(true);
+                        isAnimatingLockedLevel = false;
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                }).playOn(view);
+    }
+
+    private void startLevelWithAnimation(View view, int index) {
+
+        // declare as final to give access to AnimatorListener override methods
+        final int i = index;
+
+        YoYo.with(animTechnique)
+                .duration(400)
+                .interpolate(new AccelerateDecelerateInterpolator())
+                .withListener(new Animator.AnimatorListener() {
+
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        Intent intent = new Intent(getApplicationContext(), Levels.levels[i]);
+                        startActivityForResult(intent, 1);
+                        overridePendingTransition(R.anim.activity_main_fade_in, R.anim.activity_main_fade_out);
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                }).playOn(view);
+
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }
 
@@ -99,7 +198,7 @@ class SelectorAdapter extends BaseAdapter {
 
     private Context mContext;
     private Typeface mFace;
-    private HashSet<String> mCompletedLevels;
+    private HashSet<Integer> mCompletedLevels;
 
     private String[] numbers = new String[]{
             "1", "2", "3", "4", "5",
@@ -107,7 +206,7 @@ class SelectorAdapter extends BaseAdapter {
             "11", "12", "13", "14", "15",
             "16", "17", "18", "19", "20"};
 
-    public SelectorAdapter(Context c, HashSet<String> completedLevels) {
+    public SelectorAdapter(Context c, HashSet<Integer> completedLevels) {
         mContext = c;
         mFace = Typeface.createFromAsset(mContext.getAssets(),
                 "fonts/android-dev-icons-2.ttf");
@@ -138,7 +237,7 @@ class SelectorAdapter extends BaseAdapter {
         textView.setHapticFeedbackEnabled(true);
 
         // shows the level indicator when level is complete
-        if (mCompletedLevels.contains(Integer.toString(position))) {
+        if (mCompletedLevels.contains(position)) {
             textView.setBackgroundResource(R.drawable.activity_selector_textview_white);
             textView.setTextColor(mContext.getResources().getColor(R.color.white));
             textView.setText(numbers[position]);

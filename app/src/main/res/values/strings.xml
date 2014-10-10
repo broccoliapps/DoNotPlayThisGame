@@ -7,6 +7,6 @@
     <string name="activity_level1">ActivityLevel1</string>
     <string name="activity_level2">ActivityLevel2</string>
     <string name="activity_selector">ActivitySelector</string>
-    <string name="Seriously">Seriously, Don\'t.</string>
+    <string name="activity_selector_prompt">Choose a level:</string>
 
 </resources>
