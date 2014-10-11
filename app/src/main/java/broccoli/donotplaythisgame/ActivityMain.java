@@ -20,13 +20,9 @@ public class ActivityMain extends Activity implements View.OnClickListener {
     private TextView tvLogo;
 
     // Buttons from the Activity layout
-    private Button bSlot1;
-    private Button bSlot2;
-    private Button bSlot3;
+    private Button[] bSlots;
 
-    private SharedPreferences prefSlot1;
-    private SharedPreferences prefSlot2;
-    private SharedPreferences prefSlot3;
+    private SharedPreferences[] slotPrefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,55 +30,76 @@ public class ActivityMain extends Activity implements View.OnClickListener {
 
         setContentView(R.layout.activity_main);
 
-        // gets SharedPreferences for game slots
-        prefSlot1 = GameData.createNewSharedPreference(this, "slot1",
-                MODE_PRIVATE);
-        prefSlot2 = GameData.createNewSharedPreference(this, "slot2",
-                MODE_PRIVATE);
-        prefSlot3 = GameData.createNewSharedPreference(this, "slot3",
-                MODE_PRIVATE);
+        // initializes the SharedPreferences objects
+        initializeGameSlotPrefs();
 
-        // initializes Views
+        // initializes the Views from the layout xml file
+        initializeViews();
+
+        // sets the text in the Button views according to the SharedPreference values
+        setButtonValues();
+
+    }
+
+    /**
+     * Creates/initializes the global SharedPreference objects containing the level progress
+     * information for each game slot.
+     */
+    private void initializeGameSlotPrefs() {
+
+        slotPrefs = new SharedPreferences[]{
+
+                slotPrefs[0] = GameData.createNewSharedPreference(this, "slot1",
+                        MODE_PRIVATE),
+                slotPrefs[1] = GameData.createNewSharedPreference(this, "slot2",
+                        MODE_PRIVATE),
+                slotPrefs[2] = GameData.createNewSharedPreference(this, "slot3",
+                        MODE_PRIVATE)
+        };
+
+    }
+
+    /**
+     * Initializes the Views from the layout XML file that have interaction.
+     */
+    private void initializeViews() {
         rlContainer = (RelativeLayout) findViewById(R.id.rlContainer);
+
         tvLogo = (TextView) findViewById(R.id.tvLogo);
-        bSlot1 = (Button) findViewById(R.id.bSlot1);
-        bSlot2 = (Button) findViewById(R.id.bSlot2);
-        bSlot3 = (Button) findViewById(R.id.bSlot3);
-
-        // sets button values
-        
-
-
-        // Sets logo font
         Typeface face = Typeface.createFromAsset(getAssets(),
                 "fonts/android-dev-icons-2.ttf");
         tvLogo.setTypeface(face);
 
-        // sets button click listeners
-        bSlot1.setOnClickListener(this);
-        bSlot2.setOnClickListener(this);
-        bSlot3.setOnClickListener(this);
+        bSlots = new Button[]{
+                bSlots[0] = (Button) findViewById(R.id.bSlot1),
+                bSlots[1] = (Button) findViewById(R.id.bSlot2),
+                bSlots[2] = (Button) findViewById(R.id.bSlot3)
+        };
 
+        bSlots[0].setOnClickListener(this);
+        bSlots[1].setOnClickListener(this);
+        bSlots[2].setOnClickListener(this);
+    }
+
+    /**
+     * Reads the values from the SharedPreferences and sets the text value in the game slot Buttons.
+     */
+    private void setButtonValues() {
+        int value = -1;
+        for (int i = 0; i < slotPrefs.length; i++) {
+            value = slotPrefs[i].getInt("currentLevel", -1);
+            if (value == -1) {
+                bSlots[i].setText(R.string.empty_slot);
+            } else {
+                bSlots[i].setText("Level " + value);
+            }
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
-        SharedPreferences gameData = this.getSharedPreferences("broccoliapps.dnptg.data", 0);
-        levelsTried[0] = gameData.getInt("levelsTried1", 0);
-
-        if (levelsTried[0] > 0) {
-            bSlot1.setText("Game1");
-        }
-
-        if (levelsTried[1] > 0) {
-            bSlot1.setText("Game2");
-        }
-        if (levelsTried[2] > 0) {
-            bSlot1.setText("Game3");
-        }
-
+        setButtonValues();
     }
 
 
