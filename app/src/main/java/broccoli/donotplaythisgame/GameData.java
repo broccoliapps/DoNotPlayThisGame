@@ -17,6 +17,7 @@ public class GameData {
      * @return SharedPreferences object
      */
     public static SharedPreferences createNewSharedPreference(Context c, String name, int mode) {
+
         SharedPreferences pref = c.getSharedPreferences(name, mode);
         if (pref == null) {
             return null;

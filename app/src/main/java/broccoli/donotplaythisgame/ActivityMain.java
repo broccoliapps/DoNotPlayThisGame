@@ -50,11 +50,11 @@ public class ActivityMain extends Activity implements View.OnClickListener {
 
         slotPrefs = new SharedPreferences[]{
 
-                slotPrefs[0] = GameData.createNewSharedPreference(this, "slot1",
+                GameData.createNewSharedPreference(this, "slot1",
                         MODE_PRIVATE),
-                slotPrefs[1] = GameData.createNewSharedPreference(this, "slot2",
+                GameData.createNewSharedPreference(this, "slot2",
                         MODE_PRIVATE),
-                slotPrefs[2] = GameData.createNewSharedPreference(this, "slot3",
+                GameData.createNewSharedPreference(this, "slot3",
                         MODE_PRIVATE)
         };
 
@@ -72,9 +72,9 @@ public class ActivityMain extends Activity implements View.OnClickListener {
         tvLogo.setTypeface(face);
 
         bSlots = new Button[]{
-                bSlots[0] = (Button) findViewById(R.id.bSlot1),
-                bSlots[1] = (Button) findViewById(R.id.bSlot2),
-                bSlots[2] = (Button) findViewById(R.id.bSlot3)
+                (Button) findViewById(R.id.bSlot1),
+                (Button) findViewById(R.id.bSlot2),
+                (Button) findViewById(R.id.bSlot3)
         };
 
         bSlots[0].setOnClickListener(this);
