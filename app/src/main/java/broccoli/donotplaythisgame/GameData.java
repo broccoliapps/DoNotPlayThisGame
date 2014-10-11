@@ -26,15 +26,26 @@ public class GameData {
     }
 
     /**
+     * Clears the values in the given SharedPreference.
+     *
+     * @param pref SharedPreferences object to clear the values of
+     */
+    public static void clearSharedPreference(SharedPreferences pref) {
+        SharedPreferences.Editor editor = pref.edit();
+        editor.clear();
+        editor.apply();
+    }
+
+    /**
      * Adds a new key/value to the given SharedPreference.
      *
-     * @param preferences SharedPreferences object to put int into
-     * @param key         Name of integer
-     * @param value       Value of integer
+     * @param pref  SharedPreferences object to put int into
+     * @param key   Name of integer
+     * @param value Value of integer
      */
-    public static void putInt(SharedPreferences preferences, String key, int value) {
+    public static void putInt(SharedPreferences pref, String key, int value) {
 
-        SharedPreferences.Editor editor = preferences.edit();
+        SharedPreferences.Editor editor = pref.edit();
 
         // puts the key/value into the SharedPreferences
         editor.putInt(key, (Integer) value);

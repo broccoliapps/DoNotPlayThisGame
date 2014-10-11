@@ -11,7 +11,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
-public class ActivityMain extends Activity implements View.OnClickListener {
+public class ActivityMain extends Activity implements View.OnClickListener, View.OnLongClickListener {
 
     // RelativeLayout container from the Activity layout
     private RelativeLayout rlContainer;
@@ -38,7 +38,7 @@ public class ActivityMain extends Activity implements View.OnClickListener {
         initializeViews();
 
         // sets the text in the Button views according to the SharedPreference values
-        setButtonValues();
+        updateButtonValues();
 
     }
 
@@ -77,15 +77,18 @@ public class ActivityMain extends Activity implements View.OnClickListener {
                 (Button) findViewById(R.id.bSlot3)
         };
 
-        bSlots[0].setOnClickListener(this);
-        bSlots[1].setOnClickListener(this);
-        bSlots[2].setOnClickListener(this);
+        for (Button b : bSlots) {
+            b.setOnClickListener(this);
+            b.setOnLongClickListener(this);
+        }
+
+
     }
 
     /**
      * Reads the values from the SharedPreferences and sets the text value in the game slot Buttons.
      */
-    private void setButtonValues() {
+    private void updateButtonValues() {
         int value = -1;
         for (int i = 0; i < slotPrefs.length; i++) {
             value = slotPrefs[i].getInt("currentLevel", -1);
@@ -102,7 +105,7 @@ public class ActivityMain extends Activity implements View.OnClickListener {
         super.onResume();
 
         // sets the text in the Button views according to the SharedPreference values
-        setButtonValues();
+        updateButtonValues();
     }
 
 
@@ -122,5 +125,24 @@ public class ActivityMain extends Activity implements View.OnClickListener {
         }
         startActivity(intent);
         overridePendingTransition(R.anim.activity_main_fade_in, R.anim.activity_main_fade_out);
+    }
+
+    @Override
+    public boolean onLongClick(View view) {
+
+        switch (view.getId()) {
+            case R.id.bSlot1:
+                GameData.clearSharedPreference(slotPrefs[0]);
+                break;
+            case R.id.bSlot2:
+                GameData.clearSharedPreference(slotPrefs[1]);
+                break;
+            case R.id.bSlot3:
+                GameData.clearSharedPreference(slotPrefs[2]);
+                break;
+        }
+        updateButtonValues();
+
+        return true;
     }
 }
