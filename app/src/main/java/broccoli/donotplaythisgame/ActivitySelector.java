@@ -3,6 +3,7 @@ package broccoli.donotplaythisgame;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.TypedValue;
@@ -22,6 +23,8 @@ import com.nineoldandroids.animation.Animator;
 
 import java.util.HashSet;
 
+import level1to5.ActivityLevel1;
+
 public class ActivitySelector extends Activity implements AdapterView.OnItemClickListener {
 
     // contains the TextView items that represent the level activities
@@ -34,9 +37,25 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
     final Techniques animTechnique = Techniques.Wave;
     boolean isAnimating;
 
+    // shared preferences file
+    private String slot;
+    private SharedPreferences slotdata;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // gets the correct SharedPreferences file to write to
+        slot = getIntent().getStringExtra("currentGame");
+        slotdata = GameData.createNewSharedPreference(this, slot, MODE_PRIVATE);
+
+        // redirects to first level if starting new game
+        if (slotdata.getInt("currentLevel", 0) == 0) {
+            GameData.putInt(slotdata,"currentlevel", 1);
+            Intent intent = new Intent(this, ActivityLevel1.class);
+            startActivity(intent);
+        }
+
         setContentView(R.layout.activity_selector);
 
         // TODO: LOAD COMPLETED LEVELS INTO HASHSET

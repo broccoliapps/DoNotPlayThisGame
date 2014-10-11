@@ -24,6 +24,8 @@ public class ActivityMain extends Activity implements View.OnClickListener {
 
     private SharedPreferences[] slotPrefs;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,17 +111,18 @@ public class ActivityMain extends Activity implements View.OnClickListener {
         switch (view.getId()) {
             case R.id.bSlot1:
                 currentGame = 1;
-                startActivity(intent);
+                intent.putExtra("currentGame", "slot1");
                 break;
             case R.id.bSlot2:
                 currentGame = 2;
-                startActivity(intent);
+                intent.putExtra("currentGame", "slot2");
                 break;
             case R.id.bSlot3:
                 currentGame = 3;
-                startActivity(intent);
+                intent.putExtra("currentGame", "slot3");
                 break;
         }
+        startActivity(intent);
         overridePendingTransition(R.anim.activity_main_fade_in, R.anim.activity_main_fade_out);
     }
 }
