@@ -8,7 +8,16 @@ import level1to5.ActivityLevel2;
  */
 public class Levels {
 
+    // Add new ActivityLevel classes to this array to make it available to the ActivitySelector
     public static final Class[] levels = new Class[]{
             ActivityLevel1.class, ActivityLevel2.class
+    };
+
+    // Add a new String to this array to give a label to new levels in the ActivitySelector
+    public static final String[] levelNumbers = new String[]{
+            "1", "2", "3", "4", "5",
+            "6", "7", "8", "9", "10",
+            "11", "12", "13", "14", "15",
+            "16", "17", "18", "19", "20"
     };
 }

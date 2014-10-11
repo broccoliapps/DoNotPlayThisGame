@@ -22,9 +22,6 @@ import com.nineoldandroids.animation.Animator;
 
 import java.util.HashSet;
 
-import level1to5.ActivityLevel1;
-import level1to5.ActivityLevel2;
-
 public class ActivitySelector extends Activity implements AdapterView.OnItemClickListener {
 
     // contains the TextView items that represent the level activities
@@ -36,8 +33,6 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
     // holds animation logic
     final Techniques animTechnique = Techniques.Wave;
     boolean isAnimating;
-    boolean isAnimatingLockedLevel;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,7 +49,6 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
         gridView.setOnItemClickListener(this);
 
         isAnimating = false;
-        isAnimatingLockedLevel = false;
 
     }
 
@@ -64,7 +58,6 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
 
         // resets the animation boolean logic to make gridView items clickable again
         isAnimating = false;
-        isAnimatingLockedLevel = false;
     }
 
     /**
@@ -101,18 +94,14 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
         }
 
         // user clicked a locked level and it's not currently processing a locked level
-        if (isLockedLevel(position) && !isAnimatingLockedLevel) {
+        if (isLockedLevel(position)) {
 
 
             // performs haptic feedback
             v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,
                     HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
 
-            // disables the View
-            v.setEnabled(false);
-
             // animates the View
-            isAnimatingLockedLevel = true;
             animateLockedLevel(v);
 
         }
@@ -127,29 +116,7 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
         YoYo.with(animTechnique)
                 .duration(400)
                 .interpolate(new AccelerateDecelerateInterpolator())
-                .withListener(new Animator.AnimatorListener() {
-
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        v.setEnabled(true);
-                        isAnimatingLockedLevel = false;
-                    }
-
-                    @Override
-                    public void onAnimationCancel(Animator animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animator animation) {
-
-                    }
-                }).playOn(view);
+                .playOn(view);
     }
 
     private void startLevelWithAnimation(View view, int index) {
@@ -200,12 +167,6 @@ class SelectorAdapter extends BaseAdapter {
     private Typeface mFace;
     private HashSet<Integer> mCompletedLevels;
 
-    private String[] numbers = new String[]{
-            "1", "2", "3", "4", "5",
-            "6", "7", "8", "9", "10",
-            "11", "12", "13", "14", "15",
-            "16", "17", "18", "19", "20"};
-
     public SelectorAdapter(Context c, HashSet<Integer> completedLevels) {
         mContext = c;
         mFace = Typeface.createFromAsset(mContext.getAssets(),
@@ -240,7 +201,7 @@ class SelectorAdapter extends BaseAdapter {
         if (mCompletedLevels.contains(position)) {
             textView.setBackgroundResource(R.drawable.activity_selector_textview_white);
             textView.setTextColor(mContext.getResources().getColor(R.color.white));
-            textView.setText(numbers[position]);
+            textView.setText(Levels.levelNumbers[position]);
         }
 
         // Shows lock when level is not complete

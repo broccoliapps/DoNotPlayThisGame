@@ -69,7 +69,7 @@ public class ActivityLevel1 extends ActivitySelector implements View.OnLongClick
         SharedPreferences.Editor gameDataEditor = gameData.edit();
         gameDataEditor.putInt("levelsTried1",1);
         gameDataEditor.apply();
-        levelsTried[0] = 1;
+        //levelsTried[0] = 1;
         Crouton.cancelAllCroutons();
 
         // animates Level Indicator
