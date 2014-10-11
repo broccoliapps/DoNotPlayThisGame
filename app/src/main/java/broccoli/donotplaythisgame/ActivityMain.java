@@ -101,6 +101,8 @@ public class ActivityMain extends Activity implements View.OnClickListener {
     @Override
     protected void onResume() {
         super.onResume();
+
+        // sets the text in the Button views according to the SharedPreference values
         setButtonValues();
     }
 
