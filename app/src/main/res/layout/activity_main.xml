@@ -11,7 +11,6 @@
     tools:context=".MainActivity">
 
 
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -22,7 +21,7 @@
         android:fontFamily="sans-serif-condensed"
         android:text="DNPTG"
         android:textSize="120sp"
-        android:gravity="center"/>
+        android:gravity="center" />
 
     <TextView
         android:layout_width="150dp"
@@ -39,7 +38,7 @@
         android:layout_width="match_parent"
         android:layout_height="64dip"
         android:id="@+id/llSlots"
-        android:layout_above="@+id/bHowToPlay"
+        android:layout_alignParentBottom="true"
         android:orientation="horizontal">
 
         <Button
@@ -70,15 +69,5 @@
             android:id="@+id/bSlot3" />
 
     </LinearLayout>
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="64dip"
-        android:layout_alignParentBottom="true"
-        android:text="@string/how_to_play"
-        android:fontFamily="sans-serif-light"
-        android:background="@android:drawable/btn_default"
-        android:id="@+id/bHowToPlay" />
-
 
 </RelativeLayout>

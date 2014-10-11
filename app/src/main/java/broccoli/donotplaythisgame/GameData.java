@@ -14,47 +14,32 @@ public class GameData {
      * @param c    Context (usually the Activity calling the method)
      * @param name Name of the SharedPreference (will be used to edit and everything else)
      * @param mode private or global? (see SharedPreferences documentation)
-     * @return TRUE if created, FALSE if already exists or error
+     * @return SharedPreferences object
      */
-    public static boolean createNewSharedPreference(Context c, String name, int mode) {
-        SharedPreferences gameData = c.getSharedPreferences(name, mode);
-        if (gameData == null) {
-            return false;
+    public static SharedPreferences createNewSharedPreference(Context c, String name, int mode) {
+        SharedPreferences pref = c.getSharedPreferences(name, mode);
+        if (pref == null) {
+            return null;
         }
-        return true;
+        return pref;
     }
 
     /**
      * Adds a new key/value to the given SharedPreference.
      *
-     * @param c    Context (usually the Activity calling the method)
-     * @param name Name of the SharedPreference (will be used to edit and everything else)
-     * @param mode private or global? (see SharedPreferences documentation)
-     * @param type Type of object going into the SharedPreference (see SharedPreferenceType)
-     * @param key Name of SharedPreference extra
-     * @param value Value to store at the key
-     *
-     * @return TRUE if successful, FALSE on error
+     * @param preferences SharedPreferences object to put int into
+     * @param key         Name of integer
+     * @param value       Value of integer
      */
-    public static boolean putExtra(Context c, String name, int mode, SharedPreferenceType type,
-                                   String key, Object value) {
+    public static void putInt(SharedPreferences preferences, String key, int value) {
 
-        // gets the preferences
-        SharedPreferences preferences = c.getSharedPreferences(name, mode);
         SharedPreferences.Editor editor = preferences.edit();
 
         // puts the key/value into the SharedPreferences
-        switch(type){
-            case INTEGER:
-                editor.putInt(key, (Integer) value);
-                break;
-            default:
-                break;
-        }
+        editor.putInt(key, (Integer) value);
 
         // applies changes
         editor.apply();
-
-        return true;
     }
+
 }

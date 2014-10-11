@@ -23,27 +23,24 @@ public class ActivityMain extends Activity implements View.OnClickListener {
     private Button bSlot1;
     private Button bSlot2;
     private Button bSlot3;
-    private Button bHowToPlay;
 
-    private int[] levelsTried = new int[3];
-    private int currentGame;
-
-    //Getters
-    public int getcurrentGame() {
-        return currentGame;
-    }
+    private SharedPreferences prefSlot1;
+    private SharedPreferences prefSlot2;
+    private SharedPreferences prefSlot3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        GameData.createNewSharedPreference(this, "data", MODE_PRIVATE);
-
-        // adds completed levels to the shared preference
-        GameData.putExtra(this, "data", MODE_PRIVATE, SharedPreferenceType.INTEGER,
-                "levelsTried1", 0);
-
         setContentView(R.layout.activity_main);
+
+        // gets SharedPreferences for game slots
+        prefSlot1 = GameData.createNewSharedPreference(this, "slot1",
+                MODE_PRIVATE);
+        prefSlot2 = GameData.createNewSharedPreference(this, "slot2",
+                MODE_PRIVATE);
+        prefSlot3 = GameData.createNewSharedPreference(this, "slot3",
+                MODE_PRIVATE);
 
         // initializes Views
         rlContainer = (RelativeLayout) findViewById(R.id.rlContainer);
@@ -51,18 +48,9 @@ public class ActivityMain extends Activity implements View.OnClickListener {
         bSlot1 = (Button) findViewById(R.id.bSlot1);
         bSlot2 = (Button) findViewById(R.id.bSlot2);
         bSlot3 = (Button) findViewById(R.id.bSlot3);
-        bHowToPlay = (Button) findViewById(R.id.bHowToPlay);
 
-
-        if (levelsTried[0] > 0) {
-            bSlot1.setText("Game1");
-        }
-        if (levelsTried[1] > 0) {
-            bSlot1.setText("Game2");
-        }
-        if (levelsTried[2] > 0) {
-            bSlot1.setText("Game3");
-        }
+        // sets button values
+        
 
 
         // Sets logo font
@@ -74,7 +62,6 @@ public class ActivityMain extends Activity implements View.OnClickListener {
         bSlot1.setOnClickListener(this);
         bSlot2.setOnClickListener(this);
         bSlot3.setOnClickListener(this);
-        bHowToPlay.setOnClickListener(this);
 
     }
 
@@ -114,8 +101,6 @@ public class ActivityMain extends Activity implements View.OnClickListener {
             case R.id.bSlot3:
                 currentGame = 3;
                 startActivity(intent);
-                break;
-            case R.id.bHowToPlay:
                 break;
         }
         overridePendingTransition(R.anim.activity_main_fade_in, R.anim.activity_main_fade_out);
