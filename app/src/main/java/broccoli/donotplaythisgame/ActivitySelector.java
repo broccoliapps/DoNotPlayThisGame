@@ -22,6 +22,7 @@ import com.daimajia.androidanimations.library.YoYo;
 import com.nineoldandroids.animation.Animator;
 
 import java.util.HashSet;
+import java.util.logging.Level;
 
 import level1to5.ActivityLevel1;
 
@@ -51,8 +52,8 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
 
         // redirects to first level if starting new game
         if (slotdata.getInt("currentLevel", 0) == 0) {
-            GameData.putInt(slotdata,"currentlevel", 1);
-            Intent intent = new Intent(this, ActivityLevel1.class);
+            GameData.putInt(slotdata,"currentLevel", 1);
+            Intent intent = new Intent(this, Levels.levels[0]);
             startActivity(intent);
         }
 
