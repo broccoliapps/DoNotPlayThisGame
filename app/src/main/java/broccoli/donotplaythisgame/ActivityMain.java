@@ -10,8 +10,6 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import level1to5.ActivityLevel1;
-
 
 public class ActivityMain extends Activity implements View.OnClickListener {
 
@@ -27,29 +25,13 @@ public class ActivityMain extends Activity implements View.OnClickListener {
     private Button bSlot3;
     private Button bHowToPlay;
 
-    public int[] levelsTried = {0, 0, 0};
-    public int currentGame = 1;
-    //GameData
-    private int[] levelsTried = {0,0,0};
-    private int currentGame = 1;
+    private int[] levelsTried = new int[3];
+    private int currentGame;
 
     //Getters
-    public int getlevelsTried(int game) {
-        return levelsTried[game];
-    }
     public int getcurrentGame() {
         return currentGame;
     }
-
-    //Setters
-    public int setlevelsTried(int game, int levels) {
-        this.levelsTried[game] = levels;
-    }
-    public int setcurrentGame(int currentGame) {
-        this.currentGame = currentGame;
-    }
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,14 +43,6 @@ public class ActivityMain extends Activity implements View.OnClickListener {
         GameData.putExtra(this, "data", MODE_PRIVATE, SharedPreferenceType.INTEGER,
                 "levelsTried1", 0);
 
-        SharedPreferences gameData = getSharedPreferences("broccoliapps.dnptg.data", MODE_PRIVATE);
-        SharedPreferences.Editor gameDataEditor = gameData.edit();
-
-
-        //Game Data
-        levelsTried[0] = gameData.getInt("levelsTried1", 0);
-        levelsTried[1] = gameData.getInt("levelsTried2", 0);
-        levelsTried[2] = gameData.getInt("levelsTried3", 0);
         setContentView(R.layout.activity_main);
 
         // initializes Views
@@ -127,30 +101,23 @@ public class ActivityMain extends Activity implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-        SharedPreferences gameData = this.getSharedPreferences("broccoliapps.dnptg.data", 0);
-        SharedPreferences.Editor gameDataEditor = gameData.edit();
+        Intent intent = new Intent(this, ActivitySelector.class);
         switch (view.getId()) {
             case R.id.bSlot1:
-                if (levelsTried[0] > 0) {
-                    gameDataEditor.putInt("currentGame", 1);
-                    gameDataEditor.apply();
-                    Intent intent = new Intent(this, ActivitySelector.class);
-                    startActivity(intent);
-                } else {
-                    Intent intent = new Intent(this, ActivityLevel1.class);
-                    startActivity(intent);
-                }
-                overridePendingTransition(R.anim.activity_main_fade_in, R.anim.activity_main_fade_out);
+                currentGame = 1;
+                startActivity(intent);
                 break;
-
             case R.id.bSlot2:
+                currentGame = 2;
+                startActivity(intent);
                 break;
             case R.id.bSlot3:
+                currentGame = 3;
+                startActivity(intent);
                 break;
             case R.id.bHowToPlay:
                 break;
-
         }
-
+        overridePendingTransition(R.anim.activity_main_fade_in, R.anim.activity_main_fade_out);
     }
 }
