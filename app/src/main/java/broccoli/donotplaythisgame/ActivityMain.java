@@ -29,6 +29,27 @@ public class ActivityMain extends Activity implements View.OnClickListener {
 
     public int[] levelsTried = {0, 0, 0};
     public int currentGame = 1;
+    //GameData
+    private int[] levelsTried = {0,0,0};
+    private int currentGame = 1;
+
+    //Getters
+    public int getlevelsTried(int game) {
+        return levelsTried[game];
+    }
+    public int getcurrentGame() {
+        return currentGame;
+    }
+
+    //Setters
+    public int setlevelsTried(int game, int levels) {
+        this.levelsTried[game] = levels;
+    }
+    public int setcurrentGame(int currentGame) {
+        this.currentGame = currentGame;
+    }
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,11 +61,12 @@ public class ActivityMain extends Activity implements View.OnClickListener {
         GameData.putExtra(this, "data", MODE_PRIVATE, SharedPreferenceType.INTEGER,
                 "levelsTried1", 0);
 
+        SharedPreferences gameData = getSharedPreferences("broccoliapps.dnptg.data", MODE_PRIVATE);
+        SharedPreferences.Editor gameDataEditor = gameData.edit();
 
 
         //Game Data
         levelsTried[0] = gameData.getInt("levelsTried1", 0);
-        //levelsTried[0] = gameData.getInt("levelsTried1", 0);
         levelsTried[1] = gameData.getInt("levelsTried2", 0);
         levelsTried[2] = gameData.getInt("levelsTried3", 0);
         setContentView(R.layout.activity_main);
