@@ -48,7 +48,7 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
         updateCurrentLevel();
         if (mCurrentLevel == 1) {
             Intent intent = new Intent(this, Levels.levels[0]);
-            startActivityForResult(intent, 1);
+            startActivityForResult(intent,1);
         }
 
         setContentView(R.layout.activity_selector);
@@ -77,6 +77,7 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
             mCurrentLevel = Levels.levelNumbers[0];
             GameData.putInt(mSlotData, "currentLevel", mCurrentLevel);
         }
+
     }
 
     @Override

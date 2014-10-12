@@ -146,49 +146,36 @@ public class ActivityLevel1 extends Activity implements View.OnLongClickListener
      */
     private void nextLevel() {
 
-
-
+        // kills appropriate items
         Crouton.cancelAllCroutons();
+
+        // saves data
+        Intent data = new Intent();
+        data.putExtra("level_completed", true);
+        setResult(2, data);
+
 
         // animates Level Indicator
         YoYo.with(Techniques.RollOut)
-                .duration(700)
-                .interpolate(new AccelerateDecelerateInterpolator())
-                .withListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
+            .duration(700)
+            .interpolate(new AccelerateDecelerateInterpolator())
+            .withListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {}
 
-                    }
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    overridePendingTransition(R.anim.activity_main_fade_in, R.anim.activity_main_fade_out);
+                    finish();
+                }
 
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
+                @Override
+                public void onAnimationCancel(Animator animation) {}
 
-                        // TODO: SAVE GAME SLOT
-
-                        // Changes activities
-                        //Intent intent = new Intent(ActivityLevel1.this, ActivityLevel2.class);
-                        //startActivity(intent);
-
-                        // Removes ActivityLevel1 from stack
-                        setResult(2);
-                        getIntent().putExtra("level_completed", true);
-                        overridePendingTransition(R.anim.activity_main_fade_in, R.anim.activity_main_fade_out);
-                        finish();
-                    }
-
-                    @Override
-                    public void onAnimationCancel(Animator animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animator animation) {
-
-                    }
-                })
-                .playOn(tvLevelIndicator);
-
-
+                @Override
+                public void onAnimationRepeat(Animator animation) {}
+            })
+            .playOn(tvLevelIndicator);
     }
 
     /**
