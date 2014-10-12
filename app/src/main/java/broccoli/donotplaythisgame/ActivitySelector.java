@@ -32,45 +32,51 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
     // contains the TextView items that represent the level activities
     GridView gridView;
 
-    // holds the index of the level activities available to the user
-    HashSet<Integer> availableLevels;
-
     // holds animation logic
-    final Techniques animTechnique = Techniques.Wave;
-    boolean isAnimating;
+    final Techniques mAnimTechnique = Techniques.Wave;
+    boolean mIsAnimating;
 
     // shared preferences file
-    private String slot;
-    private SharedPreferences slotdata;
+    private SharedPreferences mSlotData;
+    private int mCurrentLevel;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // gets the correct SharedPreferences file to write to
-        slot = getIntent().getStringExtra("currentGame");
-        slotdata = GameData.createNewSharedPreference(this, slot, MODE_PRIVATE);
-
-        // redirects to first level if starting new game
-        if (slotdata.getInt("currentLevel", 0) == 0) {
-            GameData.putInt(slotdata,"currentLevel", 1);
+        updateCurrentLevel();
+        if (mCurrentLevel == 1) {
             Intent intent = new Intent(this, Levels.levels[0]);
-            startActivity(intent);
+            startActivityForResult(intent, 1);
         }
 
         setContentView(R.layout.activity_selector);
 
-        // TODO: LOAD COMPLETED LEVELS INTO HASHSET
-        availableLevels = new HashSet<Integer>();
-        availableLevels.add(0);
 
         // initializes GridView and sets adapter and touch/click listeners
         gridView = (GridView) findViewById(R.id.gridLevels);
-        gridView.setAdapter(new SelectorAdapter(this, availableLevels));
+        gridView.setAdapter(new SelectorAdapter(this, Levels.levelNumbers[0]));
         gridView.setOnItemClickListener(this);
 
-        isAnimating = false;
+        mIsAnimating = false;
 
+    }
+
+    private void updateCurrentLevel() {
+
+        // gets the SharedPreferences for the game slot (passed in from the Intent)
+        mSlotData = GameData.createNewSharedPreference(this, getIntent().getStringExtra
+                ("currentGame"), MODE_PRIVATE);
+
+        // gets the current level from the SharedPreferences
+        mCurrentLevel = mSlotData.getInt("currentLevel", Levels.DEFAULT_INT);
+
+        // sets current level to level 1 if new game was started
+        if (mCurrentLevel == Levels.DEFAULT_INT) {
+            mCurrentLevel = Levels.levelNumbers[0];
+            GameData.putInt(mSlotData, "currentLevel", mCurrentLevel);
+        }
     }
 
     @Override
@@ -78,19 +84,20 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
         super.onResume();
 
         // resets the animation boolean logic to make gridView items clickable again
-        isAnimating = false;
+        mIsAnimating = false;
 
+        updateCurrentLevel();
 
     }
 
     /**
      * Determines if the level index is locked or available.
      *
-     * @param levelIndex Level index (starting at 0 for Level 1)
+     * @param level Level index (starting at 0 for Level 1)
      * @return TRUE if level is locked. FALSE if level is available.
      */
-    private boolean isLockedLevel(int levelIndex) {
-        if (availableLevels.contains(levelIndex)) {
+    private boolean isLockedLevel(int level) {
+        if (mCurrentLevel > level) {
             return false;
         }
         return true;
@@ -101,7 +108,7 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
 
 
         // user clicked an available level and it's not currently processing an available level
-        if (!isLockedLevel(position) && !isAnimating) {
+        if (!isLockedLevel(position + 1) && !mIsAnimating) {
 
             // performs haptic feedback
             v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,
@@ -111,14 +118,13 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
             v.setEnabled(false);
 
             // animates the View
-            isAnimating = true;
+            mIsAnimating = true;
             startLevelWithAnimation(v, position);
 
         }
 
         // user clicked a locked level and it's not currently processing a locked level
-        if (isLockedLevel(position)) {
-
+        if (isLockedLevel(position + 1)) {
 
             // performs haptic feedback
             v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,
@@ -136,7 +142,7 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
         // declare as final to give access to AnimatorListener override methods
         final View v = view;
 
-        YoYo.with(animTechnique)
+        YoYo.with(mAnimTechnique)
                 .duration(400)
                 .interpolate(new AccelerateDecelerateInterpolator())
                 .playOn(view);
@@ -147,7 +153,7 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
         // declare as final to give access to AnimatorListener override methods
         final int i = index;
 
-        YoYo.with(animTechnique)
+        YoYo.with(mAnimTechnique)
                 .duration(400)
                 .interpolate(new AccelerateDecelerateInterpolator())
                 .withListener(new Animator.AnimatorListener() {
@@ -182,7 +188,7 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        Toast toast = Toast.makeText(this, "result: "+resultCode, Toast.LENGTH_LONG);
+        Toast toast = Toast.makeText(this, "result: " + resultCode, Toast.LENGTH_LONG);
         toast.show();
         Intent intent = new Intent(getApplicationContext(), Levels.levels[resultCode]);
         startActivityForResult(intent, 1);
@@ -190,9 +196,9 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
         //if (data.getBooleanExtra("level_completed", false)) {
         //    Toast toast = Toast.makeText(this, "result: "+resultCode, Toast.LENGTH_LONG);
         //    toast.show();
-            //GameData.putInt(slotdata, "currentLevel", resultCode);
-            //Intent intent = new Intent(this, Levels.levels[resultCode]);
-            //startActivityForResult(intent, 1);
+        //GameData.putInt(slotdata, "currentLevel", resultCode);
+        //Intent intent = new Intent(this, Levels.levels[resultCode]);
+        //startActivityForResult(intent, 1);
         //;}
     }
 }
@@ -201,13 +207,13 @@ class SelectorAdapter extends BaseAdapter {
 
     private Context mContext;
     private Typeface mFace;
-    private HashSet<Integer> mCompletedLevels;
+    private int mCurrentLevel;
 
-    public SelectorAdapter(Context c, HashSet<Integer> completedLevels) {
+    public SelectorAdapter(Context c, int currentLevel) {
         mContext = c;
         mFace = Typeface.createFromAsset(mContext.getAssets(),
                 "fonts/android-dev-icons-2.ttf");
-        mCompletedLevels = completedLevels;
+        mCurrentLevel = currentLevel;
     }
 
     public int getCount() {
@@ -234,7 +240,7 @@ class SelectorAdapter extends BaseAdapter {
         textView.setHapticFeedbackEnabled(true);
 
         // shows the level indicator when level is complete
-        if (mCompletedLevels.contains(position)) {
+        if (position <= mCurrentLevel) {
             textView.setBackgroundResource(R.drawable.activity_selector_textview_white);
             textView.setTextColor(mContext.getResources().getColor(R.color.white));
             textView.setText(Levels.levelNumbers[position]);
@@ -244,7 +250,7 @@ class SelectorAdapter extends BaseAdapter {
         else {
             textView.setBackgroundResource(R.drawable.activity_selector_textview);
             textView.setTypeface(mFace);
-            textView.setText("P");
+            textView.setText("P");  // lock character
         }
 
         return textView;

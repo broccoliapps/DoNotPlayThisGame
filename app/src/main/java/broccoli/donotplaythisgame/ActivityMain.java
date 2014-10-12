@@ -123,6 +123,7 @@ public class ActivityMain extends Activity implements View.OnClickListener, View
                 intent.putExtra("currentGame", "slot3");
                 break;
         }
+
         startActivity(intent);
         overridePendingTransition(R.anim.activity_main_fade_in, R.anim.activity_main_fade_out);
     }
