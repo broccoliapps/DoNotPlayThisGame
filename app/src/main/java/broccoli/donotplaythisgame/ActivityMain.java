@@ -10,7 +10,6 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-
 public class ActivityMain extends Activity implements View.OnClickListener, View.OnLongClickListener {
 
     // RelativeLayout container from the Activity layout

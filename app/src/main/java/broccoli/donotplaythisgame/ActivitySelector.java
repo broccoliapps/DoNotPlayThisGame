@@ -81,12 +81,27 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        Intent intent = new Intent(getApplicationContext(), Levels.levels[resultCode]);
+        startActivityForResult(intent, 1);
+
+    }
+}
+    @Override
     protected void onResume() {
         super.onResume();
-
         // resets the animation boolean logic to make gridView items clickable again
         mIsAnimating = false;
 
+        if (data.getBooleanExtra("level_completed", false)) {
+            Toast toast = Toast.makeText(this, "result: "+resultCode, Toast.LENGTH_LONG);
+            toast.show();
+        GameData.putInt(slotdata, "currentLevel", resultCode);
+        Intent intent = new Intent(this, Levels.levels[resultCode]);
+        startActivityForResult(intent, 1);
+        ;}
         updateCurrentLevel();
 
     }
@@ -160,9 +175,7 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
                 .withListener(new Animator.AnimatorListener() {
 
                     @Override
-                    public void onAnimationStart(Animator animation) {
-
-                    }
+                    public void onAnimationStart(Animator animation) {}
 
                     @Override
                     public void onAnimationEnd(Animator animation) {
@@ -172,37 +185,15 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
                     }
 
                     @Override
-                    public void onAnimationCancel(Animator animation) {
-
-                    }
+                    public void onAnimationCancel(Animator animation) {}
 
                     @Override
-                    public void onAnimationRepeat(Animator animation) {
-
-                    }
+                    public void onAnimationRepeat(Animator animation) {}
                 }).playOn(view);
 
     }
 
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        Toast toast = Toast.makeText(this, "result: " + resultCode, Toast.LENGTH_LONG);
-        toast.show();
-        Intent intent = new Intent(getApplicationContext(), Levels.levels[resultCode]);
-        startActivityForResult(intent, 1);
-
-        //if (data.getBooleanExtra("level_completed", false)) {
-        //    Toast toast = Toast.makeText(this, "result: "+resultCode, Toast.LENGTH_LONG);
-        //    toast.show();
-        //GameData.putInt(slotdata, "currentLevel", resultCode);
-        //Intent intent = new Intent(this, Levels.levels[resultCode]);
-        //startActivityForResult(intent, 1);
-        //;}
-    }
-}
 
 class SelectorAdapter extends BaseAdapter {
 
