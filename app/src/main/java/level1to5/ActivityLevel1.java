@@ -146,6 +146,8 @@ public class ActivityLevel1 extends Activity implements View.OnLongClickListener
      */
     private void nextLevel() {
 
+
+
         Crouton.cancelAllCroutons();
 
         // animates Level Indicator
@@ -164,11 +166,13 @@ public class ActivityLevel1 extends Activity implements View.OnLongClickListener
                         // TODO: SAVE GAME SLOT
 
                         // Changes activities
-                        Intent intent = new Intent(ActivityLevel1.this, ActivityLevel2.class);
-                        startActivity(intent);
-                        overridePendingTransition(R.anim.activity_main_fade_in, R.anim.activity_main_fade_out);
+                        //Intent intent = new Intent(ActivityLevel1.this, ActivityLevel2.class);
+                        //startActivity(intent);
 
                         // Removes ActivityLevel1 from stack
+                        setResult(2);
+                        getIntent().putExtra("level_completed", true);
+                        overridePendingTransition(R.anim.activity_main_fade_in, R.anim.activity_main_fade_out);
                         finish();
                     }
 

@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
@@ -78,6 +79,8 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
 
         // resets the animation boolean logic to make gridView items clickable again
         isAnimating = false;
+
+
     }
 
     /**
@@ -176,8 +179,21 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
 
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        Toast toast = Toast.makeText(this, "result: "+resultCode, Toast.LENGTH_LONG);
+        toast.show();
+        Intent intent = new Intent(getApplicationContext(), Levels.levels[resultCode]);
+        startActivityForResult(intent, 1);
+
+        //if (data.getBooleanExtra("level_completed", false)) {
+        //    Toast toast = Toast.makeText(this, "result: "+resultCode, Toast.LENGTH_LONG);
+        //    toast.show();
+            //GameData.putInt(slotdata, "currentLevel", resultCode);
+            //Intent intent = new Intent(this, Levels.levels[resultCode]);
+            //startActivityForResult(intent, 1);
+        //;}
     }
 }
 
