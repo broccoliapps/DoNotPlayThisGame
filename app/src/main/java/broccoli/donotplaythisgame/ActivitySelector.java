@@ -16,7 +16,6 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
@@ -24,7 +23,6 @@ import com.nineoldandroids.animation.Animator;
 
 import java.util.HashSet;
 import java.util.logging.Level;
-
 import level1to5.ActivityLevel1;
 
 public class ActivitySelector extends Activity implements AdapterView.OnItemClickListener {
@@ -39,6 +37,9 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
     // shared preferences file
     private SharedPreferences mSlotData;
     private int mCurrentLevel;
+    private Intent data;
+    private int resultCode;
+    private int requestCode;
 
 
     @Override
@@ -48,7 +49,7 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
         updateCurrentLevel();
         if (mCurrentLevel == 1) {
             Intent intent = new Intent(this, Levels.levels[0]);
-            startActivityForResult(intent,1);
+            startActivityForResult(intent, 1);
         }
 
         setContentView(R.layout.activity_selector);
@@ -63,32 +64,14 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
 
     }
 
-    private void updateCurrentLevel() {
-
-        // gets the SharedPreferences for the game slot (passed in from the Intent)
-        mSlotData = GameData.createNewSharedPreference(this, getIntent().getStringExtra
-                ("currentGame"), MODE_PRIVATE);
-
-        // gets the current level from the SharedPreferences
-        mCurrentLevel = mSlotData.getInt("currentLevel", Levels.DEFAULT_INT);
-
-        // sets current level to level 1 if new game was started
-        if (mCurrentLevel == Levels.DEFAULT_INT) {
-            mCurrentLevel = Levels.levelNumbers[0];
-            GameData.putInt(mSlotData, "currentLevel", mCurrentLevel);
-        }
-
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        Intent intent = new Intent(getApplicationContext(), Levels.levels[resultCode]);
-        startActivityForResult(intent, 1);
-
+        this.data = data;
+        this.resultCode = resultCode;
+        this.requestCode = requestCode;
     }
-}
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -96,27 +79,11 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
         mIsAnimating = false;
 
         if (data.getBooleanExtra("level_completed", false)) {
-            Toast toast = Toast.makeText(this, "result: "+resultCode, Toast.LENGTH_LONG);
-            toast.show();
-        GameData.putInt(slotdata, "currentLevel", resultCode);
-        Intent intent = new Intent(this, Levels.levels[resultCode]);
-        startActivityForResult(intent, 1);
-        ;}
-        updateCurrentLevel();
-
-    }
-
-    /**
-     * Determines if the level index is locked or available.
-     *
-     * @param level Level index (starting at 0 for Level 1)
-     * @return TRUE if level is locked. FALSE if level is available.
-     */
-    private boolean isLockedLevel(int level) {
-        if (mCurrentLevel > level) {
-            return false;
+            GameData.putInt(mSlotData, "currentLevel", resultCode);
+            Intent intent = new Intent(this, Levels.levels[resultCode]);
+            startActivityForResult(intent, 1);
         }
-        return true;
+        updateCurrentLevel();
     }
 
     @Override
@@ -151,7 +118,35 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
 
         }
     }
+    private void updateCurrentLevel() {
 
+        // gets the SharedPreferences for the game slot (passed in from the Intent)
+        mSlotData = GameData.createNewSharedPreference(this, getIntent().getStringExtra
+                ("currentGame"), MODE_PRIVATE);
+
+        // gets the current level from the SharedPreferences
+        mCurrentLevel = mSlotData.getInt("currentLevel", Levels.DEFAULT_INT);
+
+        // sets current level to level 1 if new game was started
+        if (mCurrentLevel == Levels.DEFAULT_INT) {
+            mCurrentLevel = Levels.levelNumbers[0];
+            GameData.putInt(mSlotData, "currentLevel", mCurrentLevel);
+        }
+
+    }
+
+    /**
+     * Determines if the level index is locked or available.
+     *
+     * @param level Level index (starting at 0 for Level 1)
+     * @return TRUE if level is locked. FALSE if level is available.
+     */
+    private boolean isLockedLevel(int level) {
+        if (mCurrentLevel > level) {
+            return false;
+        }
+        return true;
+    }
 
     private void animateLockedLevel(View view) {
 
@@ -175,7 +170,8 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
                 .withListener(new Animator.AnimatorListener() {
 
                     @Override
-                    public void onAnimationStart(Animator animation) {}
+                    public void onAnimationStart(Animator animation) {
+                    }
 
                     @Override
                     public void onAnimationEnd(Animator animation) {
@@ -185,14 +181,16 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
                     }
 
                     @Override
-                    public void onAnimationCancel(Animator animation) {}
+                    public void onAnimationCancel(Animator animation) {
+                    }
 
                     @Override
-                    public void onAnimationRepeat(Animator animation) {}
+                    public void onAnimationRepeat(Animator animation) {
+                    }
                 }).playOn(view);
 
     }
-
+}
 
 
 class SelectorAdapter extends BaseAdapter {
@@ -247,6 +245,4 @@ class SelectorAdapter extends BaseAdapter {
 
         return textView;
     }
-
-
 }
