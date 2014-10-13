@@ -16,6 +16,7 @@
 package level1to5;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.HapticFeedbackConstants;
@@ -61,6 +62,11 @@ public class ActivityLevel2 extends Activity {
     private void nextLevel() {
         Crouton.cancelAllCroutons();
 
+        // saves data
+        Intent intent = new Intent();
+        intent.putExtra("level_completed", true);
+        setResult(RESULT_OK, intent);
+
         YoYo.with(Techniques.RollOut)
                 .duration(700)
                 .interpolate(new AccelerateDecelerateInterpolator())
@@ -73,9 +79,7 @@ public class ActivityLevel2 extends Activity {
 
                     @Override
                     public void onAnimationEnd(Animator animation) {
-
-                        // TODO: transition to ActivityLevel3
-
+                        finish();
                     }
 
                     @Override
@@ -143,6 +147,19 @@ public class ActivityLevel2 extends Activity {
 
 
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        // saves data
+        Intent intent = new Intent();
+        intent.putExtra("level_completed", false);
+        setResult(RESULT_CANCELED, intent);
+        finish();
+
+    }
+
 
     @Override
     protected void onDestroy() {

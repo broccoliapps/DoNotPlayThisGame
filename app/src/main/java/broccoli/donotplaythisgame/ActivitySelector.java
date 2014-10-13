@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
@@ -21,14 +22,11 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.nineoldandroids.animation.Animator;
 
-import java.util.HashSet;
-import java.util.logging.Level;
-import level1to5.ActivityLevel1;
-
 public class ActivitySelector extends Activity implements AdapterView.OnItemClickListener {
 
     // contains the TextView items that represent the level activities
     GridView gridView;
+    SelectorAdapter gridViewAdapter;
 
     // holds animation logic
     final Techniques mAnimTechnique = Techniques.Wave;
@@ -36,54 +34,75 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
 
     // shared preferences file
     private SharedPreferences mSlotData;
-    private int mCurrentLevel;
-    private Intent data;
-    private int resultCode;
-    private int requestCode;
+    private int mHighestLevel;
+    private int mCurrentLevel;  // 1-indexed
 
+    // result to pass to and from the level Activities
+    private Intent intent;
+    private boolean isLevelCompleted;
+    private int levelCompleted;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        updateCurrentLevel();
+        // gets current level from SharedPreferences
+        initializeHighestLevel();
+        mCurrentLevel = mHighestLevel;
+
+        // auto-starts level 1 if new game
         if (mCurrentLevel == 1) {
-            Intent intent = new Intent(this, Levels.levels[0]);
+            intent = new Intent(this, Levels.levels[0]);
             startActivityForResult(intent, 1);
         }
 
         setContentView(R.layout.activity_selector);
 
-
-        // initializes GridView and sets adapter and touch/click listeners
-        gridView = (GridView) findViewById(R.id.gridLevels);
-        gridView.setAdapter(new SelectorAdapter(this, Levels.levelNumbers[0]));
-        gridView.setOnItemClickListener(this);
+        initializeGridView();
 
         mIsAnimating = false;
 
+    }
+
+    private void initializeGridView() {
+        // initializes GridView and sets adapter and touch/click listeners
+        gridView = (GridView) findViewById(R.id.gridLevels);
+        gridViewAdapter = new SelectorAdapter(this, mCurrentLevel);
+        gridView.setAdapter(gridViewAdapter);
+        gridView.setOnItemClickListener(this);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        this.data = data;
-        this.resultCode = resultCode;
-        this.requestCode = requestCode;
+
+        isLevelCompleted = data.getBooleanExtra("level_completed", false);
+        levelCompleted = data.getIntExtra("this_level", Levels.DEFAULT_INT);
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+
         // resets the animation boolean logic to make gridView items clickable again
         mIsAnimating = false;
 
-        if (data.getBooleanExtra("level_completed", false)) {
-            GameData.putInt(mSlotData, "currentLevel", resultCode);
-            Intent intent = new Intent(this, Levels.levels[resultCode]);
+        // updates SharedPreferences when level is completed
+        if (isLevelCompleted) {
+
+            if (levelCompleted == mCurrentLevel) {
+                mHighestLevel++;
+            }
+
+            GameData.putInt(mSlotData, "currentLevel", mCurrentLevel);
+
+            // launch next level
+            Intent intent = new Intent(this, Levels.levels[mCurrentLevel - 1]);
             startActivityForResult(intent, 1);
         }
-        updateCurrentLevel();
+
+        gridViewAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -102,7 +121,7 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
 
             // animates the View
             mIsAnimating = true;
-            startLevelWithAnimation(v, position);
+            startLevelWithAnimation(v, (position + 1));
 
         }
 
@@ -118,34 +137,38 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
 
         }
     }
-    private void updateCurrentLevel() {
+
+    /**
+     * Initializes the value at mHighestLevel from the SharedPreferences.
+     */
+    private void initializeHighestLevel() {
 
         // gets the SharedPreferences for the game slot (passed in from the Intent)
         mSlotData = GameData.createNewSharedPreference(this, getIntent().getStringExtra
                 ("currentGame"), MODE_PRIVATE);
 
         // gets the current level from the SharedPreferences
-        mCurrentLevel = mSlotData.getInt("currentLevel", Levels.DEFAULT_INT);
+        mHighestLevel = mSlotData.getInt("highestLevel", Levels.DEFAULT_INT);
 
         // sets current level to level 1 if new game was started
-        if (mCurrentLevel == Levels.DEFAULT_INT) {
-            mCurrentLevel = Levels.levelNumbers[0];
-            GameData.putInt(mSlotData, "currentLevel", mCurrentLevel);
+        if (mHighestLevel == Levels.DEFAULT_INT) {
+            mHighestLevel = Levels.levelNumbers[0];
+            GameData.putInt(mSlotData, "highestLevel", mHighestLevel);
         }
 
     }
 
     /**
-     * Determines if the level index is locked or available.
+     * Determines if the level is locked or available.
      *
-     * @param level Level index (starting at 0 for Level 1)
+     * @param level Level (1-indexed)
      * @return TRUE if level is locked. FALSE if level is available.
      */
     private boolean isLockedLevel(int level) {
-        if (mCurrentLevel > level) {
-            return false;
+        if (level > mCurrentLevel) {
+            return true;
         }
-        return true;
+        return false;
     }
 
     private void animateLockedLevel(View view) {
@@ -159,10 +182,10 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
                 .playOn(view);
     }
 
-    private void startLevelWithAnimation(View view, int index) {
+    private void startLevelWithAnimation(View view, int level) {
 
         // declare as final to give access to AnimatorListener override methods
-        final int i = index;
+        final int i = level;
 
         YoYo.with(mAnimTechnique)
                 .duration(400)
@@ -230,10 +253,10 @@ class SelectorAdapter extends BaseAdapter {
         textView.setHapticFeedbackEnabled(true);
 
         // shows the level indicator when level is complete
-        if (position <= mCurrentLevel) {
+        if (position < mCurrentLevel) {
             textView.setBackgroundResource(R.drawable.activity_selector_textview_white);
             textView.setTextColor(mContext.getResources().getColor(R.color.white));
-            textView.setText(Levels.levelNumbers[position]);
+            textView.setText(Integer.toString(Levels.levelNumbers[position]));
         }
 
         // Shows lock when level is not complete

@@ -20,7 +20,6 @@ package level1to5;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
@@ -32,6 +31,7 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.nineoldandroids.animation.Animator;
 
+import broccoli.donotplaythisgame.Levels;
 import broccoli.donotplaythisgame.R;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
@@ -141,6 +141,21 @@ public class ActivityLevel1 extends Activity implements View.OnLongClickListener
     // PRIVATE METHODS //
     // //////////////////
 
+    @Override
+    public void onBackPressed() {
+
+        // saves data
+        Intent intent = new Intent();
+        intent.putExtra("level_completed", false);
+        intent.putExtra("this_level", Levels.levelNumbers[0]);
+        setResult(RESULT_CANCELED, intent);
+
+        finish();
+
+        super.onBackPressed();
+
+    }
+
     /**
      * Animates the transition to the next level and saves the game slot.
      */
@@ -150,32 +165,36 @@ public class ActivityLevel1 extends Activity implements View.OnLongClickListener
         Crouton.cancelAllCroutons();
 
         // saves data
-        Intent data = new Intent();
-        data.putExtra("level_completed", true);
-        setResult(2, data);
+        Intent intent = new Intent();
+        intent.putExtra("level_completed", true);
+        intent.putExtra("this_level", Levels.levelNumbers[0]);
+        setResult(RESULT_OK, intent);
 
 
         // animates Level Indicator
         YoYo.with(Techniques.RollOut)
-            .duration(700)
-            .interpolate(new AccelerateDecelerateInterpolator())
-            .withListener(new Animator.AnimatorListener() {
-                @Override
-                public void onAnimationStart(Animator animation) {}
+                .duration(700)
+                .interpolate(new AccelerateDecelerateInterpolator())
+                .withListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                    }
 
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    overridePendingTransition(R.anim.activity_main_fade_in, R.anim.activity_main_fade_out);
-                    finish();
-                }
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        overridePendingTransition(R.anim.activity_main_fade_in, R.anim.activity_main_fade_out);
+                        finish();
+                    }
 
-                @Override
-                public void onAnimationCancel(Animator animation) {}
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+                    }
 
-                @Override
-                public void onAnimationRepeat(Animator animation) {}
-            })
-            .playOn(tvLevelIndicator);
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+                    }
+                })
+                .playOn(tvLevelIndicator);
     }
 
     /**
