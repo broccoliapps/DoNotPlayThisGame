@@ -1,28 +1,25 @@
 package broccoli.donotplaythisgame;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.GridView;
-import android.widget.TextView;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.nineoldandroids.animation.Animator;
 
 public class ActivitySelector extends Activity implements AdapterView.OnItemClickListener {
+
+    // ///////////////////
+    // GLOBAL VARIABLES //
+    // ///////////////////
 
     // contains the TextView items that represent the level activities
     GridView gridView;
@@ -35,23 +32,26 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
     // shared preferences file
     private SharedPreferences mSlotData;
     private int mHighestLevel;
-    private int mCurrentLevel;  // 1-indexed
 
     // result to pass to and from the level Activities
     private Intent intent;
-    private boolean isLevelCompleted;
-    private int levelCompleted;
+    private boolean mLevelCompleted;
+    private int mLevel;
+
+    // ///////////////////
+    // OVERRIDE METHODS //
+    // ///////////////////
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // gets current level from SharedPreferences
+        // gets highest level from SharedPreferences
         initializeHighestLevel();
-        mCurrentLevel = mHighestLevel;
+        mLevel = mHighestLevel;
 
         // auto-starts level 1 if new game
-        if (mCurrentLevel == 1) {
+        if (mLevel == 1) {
             intent = new Intent(this, Levels.levels[0]);
             startActivityForResult(intent, 1);
         }
@@ -61,48 +61,47 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
         initializeGridView();
 
         mIsAnimating = false;
+        mLevelCompleted = false;
 
-    }
 
-    private void initializeGridView() {
-        // initializes GridView and sets adapter and touch/click listeners
-        gridView = (GridView) findViewById(R.id.gridLevels);
-        gridViewAdapter = new SelectorAdapter(this, mCurrentLevel);
-        gridView.setAdapter(gridViewAdapter);
-        gridView.setOnItemClickListener(this);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        isLevelCompleted = data.getBooleanExtra("level_completed", false);
-        levelCompleted = data.getIntExtra("this_level", Levels.DEFAULT_INT);
+        // globalizes extras from Intent data
+        mLevelCompleted = data.getBooleanExtra("level_completed", false);
+        mLevel = data.getIntExtra("this_level", Levels.DEFAULT_INT);
 
     }
 
     @Override
     protected void onResume() {
-        super.onResume();
 
         // resets the animation boolean logic to make gridView items clickable again
         mIsAnimating = false;
 
-        // updates SharedPreferences when level is completed
-        if (isLevelCompleted) {
+        if (mLevelCompleted) {
 
-            if (levelCompleted == mCurrentLevel) {
+            if (mLevel == mHighestLevel) {
                 mHighestLevel++;
+                GameData.putInt(mSlotData, "highestLevel", mHighestLevel);
+                gridViewAdapter.setHighestLevel(mHighestLevel);
+                gridViewAdapter.notifyDataSetChanged();
             }
 
-            GameData.putInt(mSlotData, "currentLevel", mCurrentLevel);
-
             // launch next level
-            Intent intent = new Intent(this, Levels.levels[mCurrentLevel - 1]);
+            mLevel++;
+            Intent intent = new Intent(this, Levels.levels[mLevel - 1]);
             startActivityForResult(intent, 1);
         }
 
         gridViewAdapter.notifyDataSetChanged();
+
+        super.onResume();
+
+
     }
 
     @Override
@@ -111,6 +110,8 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
 
         // user clicked an available level and it's not currently processing an available level
         if (!isLockedLevel(position + 1) && !mIsAnimating) {
+
+            Log.d("position", "" + (position));
 
             // performs haptic feedback
             v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,
@@ -121,7 +122,7 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
 
             // animates the View
             mIsAnimating = true;
-            startLevelWithAnimation(v, (position + 1));
+            startLevelWithAnimation(v, (position));
 
         }
 
@@ -137,6 +138,10 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
 
         }
     }
+
+    // //////////////////
+    // PRIVATE METHODS //
+    // //////////////////
 
     /**
      * Initializes the value at mHighestLevel from the SharedPreferences.
@@ -165,7 +170,7 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
      * @return TRUE if level is locked. FALSE if level is available.
      */
     private boolean isLockedLevel(int level) {
-        if (level > mCurrentLevel) {
+        if (level > mHighestLevel) {
             return true;
         }
         return false;
@@ -182,6 +187,12 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
                 .playOn(view);
     }
 
+    /**
+     * Animates the level TextView and starts the appropriate level Activity.
+     *
+     * @param view  the TextView that was clicked (gotten from onItemClick)
+     * @param level the level to start (0-indexed)
+     */
     private void startLevelWithAnimation(View view, int level) {
 
         // declare as final to give access to AnimatorListener override methods
@@ -213,59 +224,19 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
                 }).playOn(view);
 
     }
-}
 
+    private void initializeGridView() {
 
-class SelectorAdapter extends BaseAdapter {
+        gridView = (GridView) findViewById(R.id.gridLevels);
 
-    private Context mContext;
-    private Typeface mFace;
-    private int mCurrentLevel;
-
-    public SelectorAdapter(Context c, int currentLevel) {
-        mContext = c;
-        mFace = Typeface.createFromAsset(mContext.getAssets(),
-                "fonts/android-dev-icons-2.ttf");
-        mCurrentLevel = currentLevel;
-    }
-
-    public int getCount() {
-        return 20;
-    }
-
-    public Object getItem(int position) {
-        return null;
-    }
-
-    public long getItemId(int position) {
-        return 0;
-    }
-
-    // create a new TextView for each item referenced by the Adapter
-    public View getView(int position, View convertView, ViewGroup parent) {
-
-        // creates a new TextView
-        TextView textView = new TextView(mContext);
-        textView.setTextSize(36);
-        textView.setGravity(Gravity.CENTER);
-        textView.setHeight(Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 72, mContext.getApplicationContext().getResources().getDisplayMetrics())));
-        textView.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
-        textView.setHapticFeedbackEnabled(true);
-
-        // shows the level indicator when level is complete
-        if (position < mCurrentLevel) {
-            textView.setBackgroundResource(R.drawable.activity_selector_textview_white);
-            textView.setTextColor(mContext.getResources().getColor(R.color.white));
-            textView.setText(Integer.toString(Levels.levelNumbers[position]));
+        if (gridView.getAdapter() == null) { //Adapter not set yet.
+            gridViewAdapter = new SelectorAdapter(this, mHighestLevel);
+            gridView.setAdapter(gridViewAdapter);
+        } else { //Already has an adapter
+            gridViewAdapter.notifyDataSetChanged();
         }
 
-        // Shows lock when level is not complete
-        else {
-            textView.setBackgroundResource(R.drawable.activity_selector_textview);
-            textView.setTypeface(mFace);
-            textView.setText("P");  // lock character
-        }
-
-        return textView;
+        gridView.setOnItemClickListener(this);
     }
+
 }

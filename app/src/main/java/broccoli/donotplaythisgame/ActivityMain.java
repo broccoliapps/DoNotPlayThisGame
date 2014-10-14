@@ -90,7 +90,7 @@ public class ActivityMain extends Activity implements View.OnClickListener, View
     private void updateButtonValues() {
         int value = -1;
         for (int i = 0; i < slotPrefs.length; i++) {
-            value = slotPrefs[i].getInt("currentLevel", -1);
+            value = slotPrefs[i].getInt("highestLevel", -1);
             if (value == -1) {
                 bSlots[i].setText(R.string.empty_slot);
             } else {

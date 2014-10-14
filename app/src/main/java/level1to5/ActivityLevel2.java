@@ -29,6 +29,7 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.nineoldandroids.animation.Animator;
 
+import broccoli.donotplaythisgame.Levels;
 import broccoli.donotplaythisgame.R;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
@@ -62,9 +63,11 @@ public class ActivityLevel2 extends Activity {
     private void nextLevel() {
         Crouton.cancelAllCroutons();
 
+
         // saves data
         Intent intent = new Intent();
         intent.putExtra("level_completed", true);
+        intent.putExtra("this_level", Levels.levelNumbers[1]);
         setResult(RESULT_OK, intent);
 
         YoYo.with(Techniques.RollOut)
@@ -150,16 +153,16 @@ public class ActivityLevel2 extends Activity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
 
         // saves data
         Intent intent = new Intent();
         intent.putExtra("level_completed", false);
+        intent.putExtra("this_level", Levels.levelNumbers[1]);
         setResult(RESULT_CANCELED, intent);
+        super.onBackPressed();
         finish();
 
     }
-
 
     @Override
     protected void onDestroy() {

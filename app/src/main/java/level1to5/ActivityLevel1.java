@@ -150,9 +150,9 @@ public class ActivityLevel1 extends Activity implements View.OnLongClickListener
         intent.putExtra("this_level", Levels.levelNumbers[0]);
         setResult(RESULT_CANCELED, intent);
 
+        super.onBackPressed();
         finish();
 
-        super.onBackPressed();
 
     }
 
@@ -221,7 +221,6 @@ public class ActivityLevel1 extends Activity implements View.OnLongClickListener
                 .playOn(tvLevelIndicator);
 
     }
-
 
 }
 
