@@ -1,6 +1,7 @@
 package broccoli.donotplaythisgame;
 
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
@@ -10,7 +11,8 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class ActivityMain extends Activity implements View.OnClickListener, View.OnLongClickListener {
+public class ActivityMain extends Activity implements View.OnClickListener,
+        View.OnLongClickListener, FragmentConfirmDelete.NoticeDialogListener {
 
     // RelativeLayout container from the Activity layout
     private RelativeLayout rlContainer;
@@ -20,8 +22,9 @@ public class ActivityMain extends Activity implements View.OnClickListener, View
 
     // Buttons from the Activity layout
     private Button[] bSlots;
-
     private SharedPreferences[] slotPrefs;
+
+    private boolean doDelete = false;
 
 
     @Override
@@ -130,19 +133,39 @@ public class ActivityMain extends Activity implements View.OnClickListener, View
     @Override
     public boolean onLongClick(View view) {
 
+        FragmentConfirmDelete dialog = new FragmentConfirmDelete();
+
         switch (view.getId()) {
             case R.id.bSlot1:
-                GameData.clearSharedPreference(slotPrefs[0]);
+                if (slotPrefs[0].getInt("highestLevel", Levels.DEFAULT_INT) != Levels.DEFAULT_INT) {
+                    dialog.setGameSlot(0);
+                    dialog.show(getFragmentManager(), "confirm");
+                }
                 break;
             case R.id.bSlot2:
-                GameData.clearSharedPreference(slotPrefs[1]);
+                if (slotPrefs[1].getInt("highestLevel", Levels.DEFAULT_INT) != Levels.DEFAULT_INT) {
+                    dialog.setGameSlot(1);
+                    dialog.show(getFragmentManager(), "confirm");
+                }
                 break;
             case R.id.bSlot3:
-                GameData.clearSharedPreference(slotPrefs[2]);
+                if (slotPrefs[2].getInt("highestLevel", Levels.DEFAULT_INT) != Levels.DEFAULT_INT) {
+                    dialog.setGameSlot(2);
+                    dialog.show(getFragmentManager(), "confirm");
+                }
                 break;
         }
-        updateButtonValues();
 
         return true;
+    }
+
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog, int gameSlot) {
+        GameData.clearSharedPreference(slotPrefs[gameSlot]);
+        updateButtonValues();
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog, int gameSlot) {
     }
 }

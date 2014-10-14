@@ -8,5 +8,8 @@
     <string name="activity_level2">ActivityLevel2</string>
     <string name="activity_selector">ActivitySelector</string>
     <string name="activity_selector_prompt">Choose a level:</string>
+    <string name="fragment_confirm_delete_prompt">Are you sure you wish to delete this game?</string>
+    <string name="confirm">Delete game</string>
+    <string name="cancel">Cancel</string>
 
 </resources>

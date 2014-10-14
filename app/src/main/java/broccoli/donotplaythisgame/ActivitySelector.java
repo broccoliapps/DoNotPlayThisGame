@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -110,8 +109,6 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
 
         // user clicked an available level and it's not currently processing an available level
         if (!isLockedLevel(position + 1) && !mIsAnimating) {
-
-            Log.d("position", "" + (position));
 
             // performs haptic feedback
             v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,
