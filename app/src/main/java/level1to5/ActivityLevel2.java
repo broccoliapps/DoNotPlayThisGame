@@ -16,6 +16,7 @@
 package level1to5;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.HapticFeedbackConstants;
@@ -28,6 +29,7 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.nineoldandroids.animation.Animator;
 
+import broccoli.donotplaythisgame.Levels;
 import broccoli.donotplaythisgame.R;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
@@ -61,6 +63,13 @@ public class ActivityLevel2 extends Activity {
     private void nextLevel() {
         Crouton.cancelAllCroutons();
 
+
+        // saves data
+        Intent intent = new Intent();
+        intent.putExtra("level_completed", true);
+        intent.putExtra("this_level", Levels.levelNumbers[1]);
+        setResult(RESULT_OK, intent);
+
         YoYo.with(Techniques.RollOut)
                 .duration(700)
                 .interpolate(new AccelerateDecelerateInterpolator())
@@ -73,9 +82,7 @@ public class ActivityLevel2 extends Activity {
 
                     @Override
                     public void onAnimationEnd(Animator animation) {
-
-                        // TODO: transition to ActivityLevel3
-
+                        finish();
                     }
 
                     @Override
@@ -141,6 +148,19 @@ public class ActivityLevel2 extends Activity {
         // sets on click listener for touch events on the level indicator
         tvLevelIndicator.setOnTouchListener(gestureListener);
 
+
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        // saves data
+        Intent intent = new Intent();
+        intent.putExtra("level_completed", false);
+        intent.putExtra("this_level", Levels.levelNumbers[1]);
+        setResult(RESULT_CANCELED, intent);
+        super.onBackPressed();
+        finish();
 
     }
 
