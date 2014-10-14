@@ -94,6 +94,7 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
             mLevel++;
             Intent intent = new Intent(this, Levels.levels[mLevel - 1]);
             startActivityForResult(intent, 1);
+            overridePendingTransition(R.anim.activity_main_fade_in, R.anim.activity_main_fade_out);
         }
 
         gridViewAdapter.notifyDataSetChanged();
