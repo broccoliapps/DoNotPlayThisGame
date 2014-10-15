@@ -25,7 +25,8 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
     SelectorAdapter gridViewAdapter;
 
     // holds animation logic
-    final Techniques mAnimTechnique = Techniques.Wave;
+    final Techniques mAnimTechniqueLocked = Techniques.Wave;
+    final Techniques mAnimTechnique = Techniques.TakingOff;
     boolean mIsAnimating;
 
     // shared preferences file
@@ -179,7 +180,7 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
         // declare as final to give access to AnimatorListener override methods
         final View v = view;
 
-        YoYo.with(mAnimTechnique)
+        YoYo.with(mAnimTechniqueLocked)
                 .duration(400)
                 .interpolate(new AccelerateDecelerateInterpolator())
                 .playOn(view);
@@ -197,7 +198,7 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
         final int i = level;
 
         YoYo.with(mAnimTechnique)
-                .duration(400)
+                .duration(700)
                 .interpolate(new AccelerateDecelerateInterpolator())
                 .withListener(new Animator.AnimatorListener() {
 
