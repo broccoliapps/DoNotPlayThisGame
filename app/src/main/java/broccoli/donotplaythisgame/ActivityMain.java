@@ -8,24 +8,14 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class ActivityMain extends Activity implements View.OnClickListener,
         View.OnLongClickListener, FragmentConfirmDelete.NoticeDialogListener {
 
-    // RelativeLayout container from the Activity layout
-    private RelativeLayout rlContainer;
-
-    // TextView logo
-    private TextView tvLogo;
-
     // Buttons from the Activity layout
     private Button[] bSlots;
     private SharedPreferences[] slotPrefs;
-
-    private boolean doDelete = false;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,9 +56,9 @@ public class ActivityMain extends Activity implements View.OnClickListener,
      * Initializes the Views from the layout XML file that have interaction.
      */
     private void initializeViews() {
-        rlContainer = (RelativeLayout) findViewById(R.id.rlContainer);
 
-        tvLogo = (TextView) findViewById(R.id.tvLogo);
+        // TextView logo
+        TextView tvLogo = (TextView) findViewById(R.id.tvLogo);
         Typeface face = Typeface.createFromAsset(getAssets(),
                 "fonts/android-dev-icons-2.ttf");
         tvLogo.setTypeface(face);
