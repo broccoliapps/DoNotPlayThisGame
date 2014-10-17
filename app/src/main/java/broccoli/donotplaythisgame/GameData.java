@@ -54,4 +54,15 @@ public class GameData {
         editor.apply();
     }
 
+    public static void putBoolean(SharedPreferences pref, String key, boolean value) {
+
+        SharedPreferences.Editor editor = pref.edit();
+
+        // puts the key/value into the SharedPreferences
+        editor.putBoolean(key, (boolean) value);
+
+        // applies changes
+        editor.apply();
+    }
+
 }

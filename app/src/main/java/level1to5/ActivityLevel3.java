@@ -35,15 +35,23 @@ import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
 
-public class ActivityLevel2 extends Activity implements View.OnClickListener, View.OnLongClickListener, View.OnTouchListener {
+public class ActivityLevel3 extends Activity {
 
     // ///////////////////
     // GLOBAL VARIABLES //
     // ///////////////////
 
+    // holds the swipe field size and velocity thresholds
+    private static final int SWIPE_MIN_DISTANCE = 120;
+    private static final int SWIPE_MAX_OFF_PATH = 250;
+    private static final int SWIPE_THRESHOLD_VELOCITY = 200;
+
     // holds the level indicator TextView
     private TextView tvLevelIndicator;
-    private int click_counter;
+
+    // holds the onTouch listener to set for tvLevelIndicator.
+    private GestureDetector gestureDetector;
+    View.OnTouchListener gestureListener;
 
     // //////////////////////////
     // PUBLIC OVERRIDE METHODS //
@@ -52,38 +60,25 @@ public class ActivityLevel2 extends Activity implements View.OnClickListener, Vi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_level_2);
+        setContentView(R.layout.activity_level_3);
 
-        click_counter = 0;
+        // instantiates GestureDetector Interface to set in tvLevelIndicator.onTouchListener();
+        gestureDetector = new GestureDetector(this, new MyGestureDetector());
+        gestureListener = new View.OnTouchListener() {
+
+            public boolean onTouch(View v, MotionEvent event) {
+                return gestureDetector.onTouchEvent(event);
+            }
+        };
 
         // instantiates TextView level indicator from layout xml file
         tvLevelIndicator = (TextView) findViewById(R.id.tvLevelIndicator);
+        tvLevelIndicator.setClickable(true);
 
         // sets on click listener for touch events on the level indicator
-        tvLevelIndicator.setOnTouchListener(this);
-        tvLevelIndicator.setOnClickListener(this);
-        tvLevelIndicator.setOnLongClickListener(this);
-    }
+        tvLevelIndicator.setOnTouchListener(gestureListener);
 
-    @Override
-    public void onClick(View view) {
-        click_counter++;
-        showHint(click_counter);
-    }
 
-    @Override
-    public boolean onLongClick(View view) {
-        nextLevel();
-        return true;
-    }
-
-    @Override
-    public boolean onTouch(View view, MotionEvent motionEvent) {
-        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-            view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,
-                    HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
-        }
-        return false;
     }
 
     @Override
@@ -108,9 +103,6 @@ public class ActivityLevel2 extends Activity implements View.OnClickListener, Vi
         Crouton.cancelAllCroutons();
     }
 
-
-    // holds the onTouch listener to set for tvLevelIndicator.
-
     // //////////////////
     // PRIVATE METHODS //
     // //////////////////
@@ -125,7 +117,7 @@ public class ActivityLevel2 extends Activity implements View.OnClickListener, Vi
         // saves data
         Intent intent = new Intent();
         intent.putExtra("level_completed", true);
-        intent.putExtra("this_level", Levels.levelNumbers[1]);
+        intent.putExtra("this_level", Levels.levelNumbers[2]);
         setResult(RESULT_OK, intent);
 
         YoYo.with(Techniques.RollOut)
@@ -164,11 +156,11 @@ public class ActivityLevel2 extends Activity implements View.OnClickListener, Vi
         // shows Crouton
         Crouton.cancelAllCroutons();
         switch (index) {
-            case 1:
-                Crouton.makeText(ActivityLevel2.this, "C'mon, that's too easy...", Style.INFO).show();
+            case 0:
+                Crouton.makeText(ActivityLevel3.this, "C'mon, that's too easy...", Style.INFO).show();
                 break;
-            case 5:
-                Crouton.makeText(ActivityLevel2.this, "You click too fast!", Style.INFO).show();
+            case 1:
+                Crouton.makeText(ActivityLevel3.this, "Swipe swipe swipe...", Style.INFO).show();
                 break;
             default:
                 break;
@@ -181,4 +173,61 @@ public class ActivityLevel2 extends Activity implements View.OnClickListener, Vi
 
     }
 
+
+
+    // //////////////////
+    // PRIVATE CLASSES //
+    // //////////////////
+
+    /**
+     * The GestureDetector Interface to be used as the tvLevelIndicator's onTouch listener.
+     * <p/>
+     * This class captures left and right swipe motion.
+     */
+    private class MyGestureDetector extends GestureDetector.SimpleOnGestureListener {
+
+        // //////////////////////////
+        // PUBLIC OVERRIDE METHODS //
+        // //////////////////////////
+
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            try {
+
+                // bad swipe
+                if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH)
+                    return false;
+
+                // right to left swipe
+                if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                    showHint(1);
+                }
+
+                // left to right swipe
+                else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                    nextLevel();
+
+                }
+            } catch (Exception e) {
+                // nothing
+            }
+            return false;
+        }
+
+
+        @Override
+        public void onLongPress(MotionEvent e) {
+            super.onLongPress(e);
+            showHint(0);
+        }
+
+        @Override
+        public boolean onDown(MotionEvent e) {
+            if (e.getAction() == MotionEvent.ACTION_DOWN) {
+                tvLevelIndicator.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,
+                        HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+            }
+            return true;
+        }
+    }
 }

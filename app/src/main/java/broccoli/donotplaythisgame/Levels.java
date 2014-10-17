@@ -2,8 +2,7 @@ package broccoli.donotplaythisgame;
 
 import android.graphics.Typeface;
 
-import level1to5.ActivityLevel1;
-import level1to5.ActivityLevel2;
+import level1to5.*;
 
 /**
  * Created by dannydelott on 10/10/14.
@@ -15,7 +14,7 @@ public class Levels {
 
     // Add new ActivityLevel classes to this array to make it available to the ActivitySelector
     public static final Class[] levels = new Class[]{
-            ActivityLevel1.class, ActivityLevel2.class
+            ActivityLevel1.class, ActivityLevel2.class, ActivityLevel3.class, ActivityLevel4.class,
     };
 
     // Add a new String to this array to give a label to new levels in the ActivitySelector

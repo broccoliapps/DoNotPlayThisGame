@@ -37,19 +37,14 @@ import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
 
-public class ActivityLevel1 extends Activity implements View.OnLongClickListener, View.OnClickListener, View.OnTouchListener {
+public class ActivityLevel1 extends Activity implements View.OnClickListener, View.OnTouchListener {
 
     // ///////////////////
     // GLOBAL VARIABLES //
     // ///////////////////
 
-    // holds the colors of the TextView level indicator
-    private final String WHITE = "WHITE";
-    private final String TEXT_COLOR = "TEXT_COLOR";
-
     // holds the level indicator TextView and information about its current text color
     private TextView tvLevelIndicator;
-    private String currentTextColor;
     private int clicks = 0;
 
     // //////////////////////////
@@ -66,12 +61,10 @@ public class ActivityLevel1 extends Activity implements View.OnLongClickListener
 
         // sets the background drawable of the level indicator
         tvLevelIndicator.setBackgroundResource(R.drawable.textview_number_outline_text_color);
-        currentTextColor = TEXT_COLOR;
 
         // sets on click listeners for touch events on the level indicator
         tvLevelIndicator.setOnTouchListener(this);
         tvLevelIndicator.setOnClickListener(this);
-        tvLevelIndicator.setOnLongClickListener(this);
 
     }
 
@@ -86,46 +79,7 @@ public class ActivityLevel1 extends Activity implements View.OnLongClickListener
 
     @Override
     public void onClick(View view) {
-
-        // Shows hint if color was switched a multiple of 15.
-        clicks++;
-        if (clicks % 8 == 0) {
-            showHint(0);
-        }
-
-        // Changes level indicator to white
-        if (currentTextColor.contentEquals(TEXT_COLOR)) {
-            tvLevelIndicator.setBackgroundResource(R.drawable.textview_number_outline_white);
-            tvLevelIndicator.setTextColor(getResources().getColor(R.color.white));
-            currentTextColor = WHITE;
-            return;
-        }
-
-        // Changes level indicator to text_color (#323232)
-        if (currentTextColor.contentEquals(WHITE)) {
-            tvLevelIndicator.setBackgroundResource(R.drawable.textview_number_outline_text_color);
-            tvLevelIndicator.setTextColor(getResources().getColor(R.color.text_color));
-            currentTextColor = TEXT_COLOR;
-            return;
-        }
-
-    }
-
-    @Override
-    public boolean onLongClick(View view) {
-
-        // Transitions to Level 2
-        if (currentTextColor.contentEquals(WHITE)) {
-            nextLevel();
-        }
-
-        // Displays Crouton message hint
-        if (currentTextColor.contentEquals(TEXT_COLOR)) {
-            showHint(1);
-        }
-
-        // returns true to prevent firing onClick() afterward
-        return true;
+        nextLevel();
     }
 
     @Override
@@ -153,7 +107,6 @@ public class ActivityLevel1 extends Activity implements View.OnLongClickListener
         super.onBackPressed();
         finish();
 
-
     }
 
     /**
@@ -169,7 +122,6 @@ public class ActivityLevel1 extends Activity implements View.OnLongClickListener
         intent.putExtra("level_completed", true);
         intent.putExtra("this_level", Levels.levelNumbers[0]);
         setResult(RESULT_OK, intent);
-
 
         // animates Level Indicator
         YoYo.with(Techniques.RollOut)

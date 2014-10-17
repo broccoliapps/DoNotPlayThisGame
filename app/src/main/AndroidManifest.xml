@@ -36,6 +36,24 @@
                 android:value="broccoli.donotplaythisgame.ActivityMain" />
         </activity>
         <activity
+            android:name="level1to5.ActivityLevel3"
+            android:label="@string/activity_level3"
+            android:parentActivityName=".ActivityMain"
+            android:screenOrientation="portrait" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="broccoli.donotplaythisgame.ActivityMain" />
+        </activity>
+        <activity
+            android:name="level1to5.ActivityLevel4"
+            android:label="@string/activity_level4"
+            android:parentActivityName=".ActivityMain"
+            android:screenOrientation="portrait" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="broccoli.donotplaythisgame.ActivityMain" />
+        </activity>
+        <activity
             android:name=".ActivitySelector"
             android:label="@string/activity_selector"
             android:parentActivityName=".ActivityMain"
@@ -43,6 +61,10 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="broccoli.donotplaythisgame.ActivityMain" />
+        </activity>
+        <activity
+            android:name="broccoli.level1to5.ActivityLevel5"
+            android:label="@string/title_activity_activity_level5" >
         </activity>
     </application>
 

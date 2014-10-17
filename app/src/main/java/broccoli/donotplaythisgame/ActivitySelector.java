@@ -83,6 +83,7 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
         mIsAnimating = false;
 
         if (mLevelCompleted) {
+            GameData.putBoolean(mSlotData, "level_completed", false);
 
             if (mLevel == mHighestLevel) {
                 mHighestLevel++;
