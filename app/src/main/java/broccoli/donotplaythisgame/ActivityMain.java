@@ -8,23 +8,17 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import java.util.logging.Level;
 
 public class ActivityMain extends Activity implements View.OnClickListener,
         View.OnLongClickListener, FragmentConfirmDelete.NoticeDialogListener {
-
-    // RelativeLayout container from the Activity layout
-    private RelativeLayout rlContainer;
-
-    // TextView logo
-    private TextView tvLogo;
 
     // Buttons from the Activity layout
     private Button[] bSlots;
     private SharedPreferences[] slotPrefs;
     private boolean doDelete = false;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,9 +59,9 @@ public class ActivityMain extends Activity implements View.OnClickListener,
      * Initializes the Views from the layout XML file that have interaction.
      */
     private void initializeViews() {
-        rlContainer = (RelativeLayout) findViewById(R.id.rlContainer);
 
-        tvLogo = (TextView) findViewById(R.id.tvLogo);
+        // TextView logo
+        TextView tvLogo = (TextView) findViewById(R.id.tvLogo);
         Typeface face = Typeface.createFromAsset(getAssets(),
                 "fonts/android-dev-icons-2.ttf");
         tvLogo.setTypeface(face);
@@ -91,9 +85,13 @@ public class ActivityMain extends Activity implements View.OnClickListener,
      */
     private void updateButtonValues() {
         int value = -1;
+
+        // not using for-each since i is used as slotPrefs index and bSlots index simultaneously
         for (int i = 0; i < slotPrefs.length; i++) {
-            value = slotPrefs[i].getInt("highestLevel", -1);
-            if (value == -1) {
+
+            value = slotPrefs[i].getInt("highestLevel", Levels.DEFAULT_INT);
+
+            if (value == Levels.DEFAULT_INT) {
                 bSlots[i].setText(R.string.empty_slot);
             } else {
                 bSlots[i].setText("Level " + value);

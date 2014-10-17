@@ -108,7 +108,6 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
     @Override
     public void onItemClick(AdapterView<?> adapterView, View v, int position, long id) {
 
-
         // user clicked an available level and it's not currently processing an available level
         if (!isLockedLevel(position + 1) && !mIsAnimating) {
 
@@ -121,7 +120,7 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
 
             // animates the View
             mIsAnimating = true;
-            startLevelWithAnimation(v, (position));
+            startLevelWithAnimation(v, position);
 
         }
 
@@ -176,9 +175,6 @@ public class ActivitySelector extends Activity implements AdapterView.OnItemClic
     }
 
     private void animateLockedLevel(View view) {
-
-        // declare as final to give access to AnimatorListener override methods
-        final View v = view;
 
         YoYo.with(mAnimTechniqueLocked)
                 .duration(400)

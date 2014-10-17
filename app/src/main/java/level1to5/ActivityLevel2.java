@@ -217,10 +217,7 @@ public class ActivityLevel2 extends Activity {
         @Override
         public void onLongPress(MotionEvent e) {
             super.onLongPress(e);
-
             showHint(0);
-
-
         }
 
         @Override
