@@ -23,7 +23,6 @@ public class ActivityMain extends Activity implements View.OnClickListener,
     // Buttons from the Activity layout
     private Button[] bSlots;
     private SharedPreferences[] slotPrefs;
-
     private boolean doDelete = false;
 
 
@@ -32,7 +31,7 @@ public class ActivityMain extends Activity implements View.OnClickListener,
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-
+        {}
         // initializes the SharedPreferences objects
         initializeGameSlotPrefs();
 
