@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.logging.Level;
+
 public class ActivityMain extends Activity implements View.OnClickListener,
         View.OnLongClickListener, FragmentConfirmDelete.NoticeDialogListener {
 
@@ -82,9 +84,13 @@ public class ActivityMain extends Activity implements View.OnClickListener,
      */
     private void updateButtonValues() {
         int value = -1;
+
+        // not using for-each since i is used as slotPrefs index and bSlots index simultaneously
         for (int i = 0; i < slotPrefs.length; i++) {
-            value = slotPrefs[i].getInt("highestLevel", -1);
-            if (value == -1) {
+
+            value = slotPrefs[i].getInt("highestLevel", Levels.DEFAULT_INT);
+
+            if (value == Levels.DEFAULT_INT) {
                 bSlots[i].setText(R.string.empty_slot);
             } else {
                 bSlots[i].setText("Level " + value);

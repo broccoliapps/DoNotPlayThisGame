@@ -49,7 +49,7 @@ public class SelectorAdapter extends BaseAdapter {
     // create a new TextView for each item referenced by the Adapter
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        // creates a new TextView
+        // creates a new TextView with size and gravity
         TextView textView = new TextView(mContext);
         textView.setTextSize(36);
         textView.setGravity(Gravity.CENTER);
