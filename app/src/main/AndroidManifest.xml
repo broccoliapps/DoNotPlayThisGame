@@ -63,7 +63,7 @@
                 android:value="broccoli.donotplaythisgame.ActivityMain" />
         </activity>
         <activity
-            android:name="broccoli.level1to5.ActivityLevel5"
+            android:name="level1to5.ActivityLevel5"
             android:label="@string/title_activity_activity_level5" >
         </activity>
     </application>

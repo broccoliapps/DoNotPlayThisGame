@@ -8,7 +8,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:id="@+id/rlContainer"
     android:background="@drawable/activity_background_135"
-    tools:context=".MainActivity">
+    tools:context="level1to5.ActivityLevel2">
 
     <TextView
         android:layout_width="150dp"

@@ -152,8 +152,6 @@ public class ActivityLevel4 extends Activity implements View.OnLongClickListener
 
         super.onBackPressed();
         finish();
-
-
     }
 
     /**
@@ -167,7 +165,7 @@ public class ActivityLevel4 extends Activity implements View.OnLongClickListener
         // saves data
         Intent intent = new Intent();
         intent.putExtra("level_completed", true);
-        intent.putExtra("this_level", Levels.levelNumbers[0]);
+        intent.putExtra("this_level", Levels.levelNumbers[3]);
         setResult(RESULT_OK, intent);
 
 
