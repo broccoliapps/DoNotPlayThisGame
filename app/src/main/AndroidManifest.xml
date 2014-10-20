@@ -54,6 +54,23 @@
                 android:value="broccoli.donotplaythisgame.ActivityMain" />
         </activity>
         <activity
+            android:name="level1to5.ActivityLevel5"
+            android:label="ActivityLevel5"
+            android:parentActivityName=".ActivityMain"
+            android:screenOrientation="portrait">
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+
+            <!--
+            <receiver android:name="MediaButtonReceiver">
+                <intent-filter>
+                    <action android:name="android.media.VOLUME_CHANGED_ACTION" />
+                </intent-filter>
+            </receiver>
+            -->
+
+        </activity>
+        <activity
             android:name=".ActivitySelector"
             android:label="@string/activity_selector"
             android:parentActivityName=".ActivityMain"
@@ -62,10 +79,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="broccoli.donotplaythisgame.ActivityMain" />
         </activity>
-        <activity
-            android:name="level1to5.ActivityLevel5"
-            android:label="@string/title_activity_activity_level5" >
-        </activity>
+        <receiver android:name="MediaButtonReceiver">
+            <intent-filter>
+                <action android:name="android.media.VOLUME_CHANGED_ACTION" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
